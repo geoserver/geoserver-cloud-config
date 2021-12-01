@@ -1,3 +1,20 @@
+server:
+  tomcat:
+    # Maximum number of connections that the server accepts and processes at any given time.
+    # Once the limit has been reached, the operating system may still accept connections based on the "acceptCount" property.
+    max-connections: 1000 # default: 8192
+    # Maximum queue length for incoming connection requests when all possible request processing threads are in use.
+    accept-count: 100 # default: 100
+    accesslog:
+      enabled: false
+      directory: logs
+      encoding: UTF-8
+    threads:
+      # Minimum amount of worker threads.
+      min-spare: 2 #default: 10
+      # Maximum amount of worker threads.
+      max: 20 #defaul: 200
+
 # Common configuration for all services. Override or add service specific config
 # properties on each <service-name>-service.yml file
 geoserver:
@@ -13,9 +30,9 @@ geoserver:
     # whether to send distributed events (i.e. acts as master). All instances receive remote events.
     send-events: true
     # whether to send the object (CatalogInfo/config info) as payload with the event. Set to false, 
-    # not all possible payload types are propertly tested, and full object payload is not needed.
+    # not all possible payload types are properly tested, and full object payload is not needed.
     send-object: ${geoserver.backend.data-directory.enabled}
-    # whether to send a diff of changes as payload with the event. Set to false, not all possible payload types are propertly tested nor needed.
+    # whether to send a diff of changes as payload with the event. Set to false, not all possible payload types are properly tested nor needed.
     send-diff: ${geoserver.backend.data-directory.enabled}
   backend:
     # configure catalog backends and decide which backend to use on this service.
@@ -31,16 +48,16 @@ geoserver:
       fallback-resource-directory: ${java.io.tmpdir}/cngs/catalog-client/fallback_resource_store
     data-directory:
       enabled: ${backend.data-directory:false}
-      location: ${GEOSERVER_DATA_DIR:${java.io.tmpdir}/cngs/data_directory} 
+      location: ${GEOSERVER_DATA_DIR:/opt/app/data_directory} 
     jdbcconfig:
       enabled: ${backend.jdbcconfig:false}
       initdb: false
-      web.enabled: false
+      web.enabled: true
       cache-directory: ${jdbcconfig.cachedir:${java.io.tmpdir}/cngs/jdbcconfig/cache}
       datasource:
-        jdbcUrl: ${jdbcconfig.url:"jdbc:postgresql://database:5432/geoserver_config"}
+        jdbcUrl: ${jdbcconfig.url:jdbc:postgresql://database:5432/geoserver_config}
         username: ${jdbcconfig.username:geoserver}
-        password: ${jdbcconfig.password:geo$erver}
+        password: ${jdbcconfig.password:geo5erver}
         driverClassname: ${jdbcconfig.driverClassname:org.postgresql.Driver}
         # optional:
         schema: ${jdbcconfig.schema:public}
@@ -48,6 +65,9 @@ geoserver:
         maximumPoolSize: ${jdbcconfig.maxConnections:8}
 
 management:
+  endpoints:
+    enabled-by-default: true
+    web.exposure.include: "*"
   endpoint:
     info.enabled: true
     metrics.enabled: true
@@ -55,21 +75,22 @@ management:
     health:
       enabled: true
       show-details: always
-  endpoints:
-    enabled-by-default: true
-    web.exposure.include: "*"
   metrics:
-    enable.all: false
+    binders:
+      processor.enabled: true
+      uptime.enabled: true
+      jvm.enabled: true
+    enable.all: true
     enable.jvm: true
     export:
       atlas.enabled: false
 
 spring:
   rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
-    port: ${RABBITMQ_PORT:5672}
-    username: ${RABBITMQ_URSER:guest}
-    password: ${RABBITMQ_PASSWORD:guest}
+    host: ${rabbitmq.host:rabbitmq}
+    port: ${rabbitmq.port:5672}
+    username: ${rabbitmq.user:guest}
+    password: ${rabbitmq.password:guest}
   cloud:
     bus:
       enabled: true
@@ -94,6 +115,8 @@ logging:
     org.springframework: ERROR
     org.springframework.cloud.bus: INFO
     org.springframework.retry: INFO
+    org.springframework.jdbc.support: INFO
+    com.zaxxer.hikari.pool: OFF
     # geoserver roots
     org.geoserver: INFO
     org.geoserver.catalog.plugin: INFO
@@ -101,7 +124,8 @@ logging:
     org.geoserver.wfs: WARN
     org.geoserver.jackson: INFO
     org.geotools.jackson: INFO
-    org.geoserver.platform: ERROR
+    org.geoserver.platform: INFO
+    org.geoserver.platform.resource: INFO
     org.geoserver.jdbcconfig: INFO
     oshi.hardware.platform.linux: ERROR
     oshi.software.os: ERROR
@@ -120,17 +144,26 @@ logging:
 ---
 spring.profiles: local
 # provide environment variables that otherwise would be given by docker-compose.yml
+rabbitmq.host: localhost
+
 jdbcconfig.url: jdbc:postgresql://localhost:5432/geoserver_config
 jdbcconfig.username: geoserver
-jdbcconfig.password: geo$erver
+jdbcconfig.password: geo5erver
 ---
 spring.profiles: datadir
-geoserver:
-  backend:
-    data-directory:
-      enabled: true
-      location: ${GEOSERVER_DATA_DIR:${java.io.tmpdir}/cngs/default_data_directory} 
-
+backend.jdbcconfig: false
+backend.catalog: false
+backend.data-directory: true
+---
+spring.profiles: jdbcconfig
+backend.jdbcconfig: true
+backend.catalog: false
+backend.data-directory: false
+---
+spring.profiles: catalog
+backend.catalog: true
+backend.jdbcconfig: false
+backend.data-directory: false
 ---
 spring.profiles: debug
 
