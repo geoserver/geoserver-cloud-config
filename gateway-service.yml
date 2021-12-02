@@ -96,11 +96,11 @@ spring:
 logging:
   level:
     root: WARN
-    com.netflix.discovery: WARN
-    com.netflix.eureka: WARN
+    com.netflix.discovery: INFO
+    com.netflix.eureka: INFO
     org.springframework.cloud.gateway: info
     reactor.netty: INFO
 ---
-spring.profiles: local
+spring.config.activate.on-profile: local
 server.port: 9000
     

@@ -1,3 +1,4 @@
+server.port: 8080
 spring:
   profiles:
     active: native #use native filesystem config by default instead of git. REVISIT.
@@ -7,3 +8,8 @@ logging:
   level:
     root: WARN
     org.springframework.cloud.config.server.environment.NativeEnvironmentRepository: WARN
+---
+spring.config.activate.on-profile: local
+server.port: 8888
+eureka.server.url: http://localhost:8761/eureka
+config.native.path: ./config
