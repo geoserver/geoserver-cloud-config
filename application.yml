@@ -1,3 +1,4 @@
+# shared application config for geoserver-cloud v1.0-RC2
 server:
   tomcat:
     # Maximum number of connections that the server accepts and processes at any given time.
