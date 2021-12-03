@@ -74,7 +74,7 @@ spring:
         predicates:
         - Path=${context.base}/rest/**
 # Web UI configuration routes
-      - id: restconfig
+      - id: webui
         uri: lb://web-ui
         predicates:
         - Path=${context.base}/,${context.base}/index.html,${context.base}/web,${context.base}/web/**,${context.base}/j_spring_security_check,${context.base}/j_spring_security_logout
