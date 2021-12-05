@@ -99,3 +99,8 @@ logging:
     com.netflix.discovery: WARN
     com.netflix.eureka: WARN
     org.springframework.cloud.gateway: info
+    reactor.netty: INFO
+---
+spring.profiles: local
+server.port: 9000
+    
