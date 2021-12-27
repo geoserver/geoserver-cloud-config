@@ -29,5 +29,5 @@ geoserver:
 #  jackson.serialization.WRAP_ROOT_VALUE: false
 
 ---
-spring.profiles: local
+spring.config.activate.on-profile: local
 server.port: 9100

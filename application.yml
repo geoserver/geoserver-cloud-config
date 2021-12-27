@@ -14,7 +14,7 @@ server:
       # Minimum amount of worker threads.
       min-spare: 2 #default: 10
       # Maximum amount of worker threads.
-      max: 20 #defaul: 200
+      max: 20 #default: 200
 
 # Common configuration for all services. Override or add service specific config
 # properties on each <service-name>-service.yml file
@@ -95,7 +95,7 @@ spring:
   cloud:
     bus:
       enabled: true
-      id: ${server.instance-id} # use the same instance id for eureka (see service's' bootstrap.yml) and cloud-bus' rabbitmq instance id
+      id: ${info.instance-id} # use the same instance id for eureka (see service's' bootstrap.yml) and cloud-bus' rabbitmq instance id
       trace.enabled: false #switch on tracing of acks (default off).
     stream:
       bindings:
@@ -104,8 +104,8 @@ spring:
         springCloudBusInput:
           destination: gscatalog
   jackson:
-    default-property-inclusion: non_empty
-    serialization.indent_output: false #set to true if doing manual testing and want formatted output
+    default-property-inclusion: non-empty
+    serialization.indent-output: false #set to true if doing manual testing and want formatted output
 
 reactive.feign.cloud.enabled: true
 reactive.feign.hystrix.enabled: false
@@ -115,7 +115,7 @@ logging:
     root: WARN
     org.springframework: ERROR
     org.springframework.cloud.bus: INFO
-    org.springframework.retry: INFO
+    org.springframework.retry: info
     org.springframework.jdbc.support: INFO
     com.zaxxer.hikari.pool: OFF
     # geoserver roots
@@ -143,7 +143,7 @@ logging:
     org.springframework.cloud.config.server.environment.NativeEnvironmentRepository: WARN
 
 ---
-spring.profiles: local
+spring.config.activate.on-profile: local
 # provide environment variables that otherwise would be given by docker-compose.yml
 rabbitmq.host: localhost
 
@@ -151,22 +151,22 @@ jdbcconfig.url: jdbc:postgresql://localhost:5432/geoserver_config
 jdbcconfig.username: geoserver
 jdbcconfig.password: geo5erver
 ---
-spring.profiles: datadir
+spring.config.activate.on-profile: datadir
 backend.jdbcconfig: false
 backend.catalog: false
 backend.data-directory: true
 ---
-spring.profiles: jdbcconfig
+spring.config.activate.on-profile: jdbcconfig
 backend.jdbcconfig: true
 backend.catalog: false
 backend.data-directory: false
 ---
-spring.profiles: catalog
+spring.config.activate.on-profile: catalog
 backend.catalog: true
 backend.jdbcconfig: false
 backend.data-directory: false
 ---
-spring.profiles: debug
+spring.config.activate.on-profile: debug
 
 logging:
   level:
