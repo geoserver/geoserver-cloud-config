@@ -11,6 +11,7 @@ geoserver:
     gwc.enabled: false # not ready yet
     extensions:
       importer.enabled: true
+      geostyler.enabled: true
     demos:
       enabled: true
       wps-request-builder: true
