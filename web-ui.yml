@@ -32,3 +32,4 @@ geoserver:
 ---
 spring.config.activate.on-profile: local
 server.port: 9106
+management.server.port: 8106

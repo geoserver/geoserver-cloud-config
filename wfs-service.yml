@@ -3,4 +3,4 @@ geoserver:
 ---
 spring.config.activate.on-profile: local
 server.port: 9101
-  
+management.server.port: 8101
