@@ -87,7 +87,6 @@ geoserver:
         password: ${jdbcconfig.password:geo5erver}
         driverClassname: ${jdbcconfig.driverClassname:org.postgresql.Driver}
         # optional:
-        schema: ${jdbcconfig.schema:public}
         minimumIdle: ${jdbcconfig.minConnections:2}
         maximumPoolSize: ${jdbcconfig.maxConnections:8}
 
