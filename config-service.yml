@@ -1,13 +1,3 @@
 # Should only be set in application.yml. Setting the value in bootstrap.yml will cause undesirable side effects like registering in eureka with an UNKNOWN status.
 # See https://cloud.spring.io/spring-cloud-netflix/2.0.x/multi/multi__service_discovery_eureka_clients.html#_eureka_s_health_checks
 eureka.client.healthcheck.enabled: false
-
-logging:
-  level:
-    root: warn
-    org.springframework.cloud.config.server.environment.NativeEnvironmentRepository: warn
----
-spring.config.activate.on-profile: local
-server.port: 8888
-eureka.server.url: http://localhost:8761/eureka
-config.native.path: ./config

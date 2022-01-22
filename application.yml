@@ -182,9 +182,12 @@ logging:
 
 ---
 spring.config.activate.on-profile: local
-# provide environment variables that otherwise would be given by docker-compose.yml
+# Profile used for local development, so an app launched from the IDE can participate in the cluster.
+# providing environment variables that otherwise would be given by docker-compose.yml
+# It is safe to remove this profile completely in a production deployment config.
+# Additionally, each service's bootstrap.yml must set the following properties in the "local" profile:
+# eureka.server.url: http://localhost:8761/eureka, server.port, and management.server.port if it ought to differ from server.port
 rabbitmq.host: localhost
-
 jdbcconfig.url: jdbc:postgresql://localhost:5432/geoserver_config
 jdbcconfig.username: geoserver
 jdbcconfig.password: geo5erver

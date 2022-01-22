@@ -100,6 +100,3 @@ logging:
     com.netflix.eureka: INFO
     org.springframework.cloud.gateway: info
     reactor.netty: INFO
----
-spring.config.activate.on-profile: local
-server.port: 9000

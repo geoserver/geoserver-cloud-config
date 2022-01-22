@@ -27,8 +27,3 @@ geoserver:
 #spring:
 #  error.includeStacktrace: on_trace_param
 #  jackson.serialization.WRAP_ROOT_VALUE: false
-
----
-spring.config.activate.on-profile: local
-server.port: 9100
-management.server.port: 8100
