@@ -89,6 +89,14 @@ geoserver:
         # optional:
         minimumIdle: ${jdbcconfig.minConnections:2}
         maximumPoolSize: ${jdbcconfig.maxConnections:8}
+  styling:
+    css.enabled: true
+  wms:
+    output-formats:
+      vector-tiles:
+        mapbox.enabled: true
+        geojson.enabled: true
+        topojson.enabled: true
 
 management:
   endpoints:
