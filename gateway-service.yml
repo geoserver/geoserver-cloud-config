@@ -86,6 +86,11 @@ spring:
         uri: lb://restconfig-v1 #load balanced to the restconfig-v1 instances
         predicates:
         - Path=${geoserver.base-path}/rest/**
+# GeoWebcache configuration routes
+      - id: gwc
+        uri: lb://gwc-service
+        predicates:
+        - Path=${geoserver.base-path}/gwc/**
 # Web UI configuration routes
       - id: webui
         uri: lb://web-ui
@@ -99,4 +104,5 @@ logging:
     com.netflix.discovery: INFO
     com.netflix.eureka: INFO
     org.springframework.cloud.gateway: info
+    org.springframework.cloud.gateway.handler: info
     reactor.netty: INFO
