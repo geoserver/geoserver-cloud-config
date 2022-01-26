@@ -8,7 +8,7 @@ geoserver:
     wms.enabled: true
     wcs.enabled: true
     wps.enabled: false # not working yet
-    gwc.enabled: false # not ready yet
+    gwc.enabled: true
     extensions:
       importer.enabled: true
       geostyler.enabled: true
