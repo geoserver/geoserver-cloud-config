@@ -1,4 +1,2 @@
-gwc:
-  cache-directory: ${GEOWEBCACHE_CACHE_DIR:${geoserver.backend.data-directory.location}/gwc}
 geoserver:
   backend.catalog-service.enabled: ${backend.catalog:true}

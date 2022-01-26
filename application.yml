@@ -43,6 +43,9 @@ geotools:
         password: ${https.proxyPassword:${geotools.httpclient.proxy.http.password}}
         nonProxyHosts: ${https.nonProxyHosts:${geotools.httpclient.proxy.http.nonProxyHosts}}
 
+gwc:
+  cache-directory: ${GEOWEBCACHE_CACHE_DIR:${geoserver.backend.data-directory.location}/gwc}
+
 # GeoServer-Cloud common config properties
 geoserver:
   security.enabled: true
