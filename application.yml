@@ -152,36 +152,36 @@ eureka.client.healthcheck.enabled: true
 
 logging:
   level:
-    root: WARN
-    org.springframework: ERROR
-    org.springframework.cloud.bus: INFO
+    root: warn
+    org.springframework: error
+    org.springframework.cloud.bus: info
     org.springframework.retry: info
-    org.springframework.jdbc.support: INFO
+    org.springframework.jdbc.support: info
     com.zaxxer.hikari.pool: OFF
     org.geotools.autoconfigure: info
     # geoserver roots
-    org.geoserver: INFO
-    org.geoserver.catalog.plugin: INFO
-    org.geoserver.wms: WARN #don't flood the logs with every request details
-    org.geoserver.wfs: WARN
-    org.geoserver.jackson: INFO
-    org.geotools.jackson: INFO
-    org.geoserver.platform: INFO
-    org.geoserver.platform.resource: INFO
-    org.geoserver.jdbcconfig: INFO
-    oshi.hardware.platform.linux: ERROR
-    oshi.software.os: ERROR
+    org.geoserver: info
+    org.geoserver.catalog.plugin: info
+    org.geoserver.wms: warn #don't flood the logs with every request details
+    org.geoserver.wfs: warn
+    org.geoserver.jackson: info
+    org.geotools.jackson: info
+    org.geoserver.platform: info
+    org.geoserver.platform.resource: info
+    org.geoserver.jdbcconfig: info
+    oshi.hardware.platform.linux: error
+    oshi.software.os: error
     # gs-cloud roots
-    org.geoserver.cloud: INFO
-    org.geoserver.cloud.autoconfigure: INFO
-    org.geoserver.cloud.config.factory: INFO
+    org.geoserver.cloud: info
+    org.geoserver.cloud.autoconfigure: info
+    org.geoserver.cloud.config.factory: info
     # bus debugging
-    org.geoserver.cloud.bus: INFO
-    org.springframework.cloud.bus.BusAutoConfiguration: INFO
-    org.springframework.cloud.bus.DefaultBusPathMatcher: INFO
+    org.geoserver.cloud.bus: info
+    org.springframework.cloud.bus.BusAutoConfiguration: info
+    org.springframework.cloud.bus.DefaultBusPathMatcher: info
     # reactivefeign:
-    reactivefeign.client.log: INFO
-    org.springframework.cloud.config.server.environment.NativeEnvironmentRepository: WARN
+    reactivefeign.client.log: info
+    org.springframework.cloud.config.server.environment.NativeEnvironmentRepository: warn
 
 ---
 spring.config.activate.on-profile: local
@@ -214,25 +214,28 @@ spring.config.activate.on-profile: debug
 
 logging:
   level:
-    root: WARN
-    org.springframework: INFO
+    root: warn
+    org.springframework: info
     # geoserver roots
-    org.geoserver: INFO
-    org.geoserver.catalog.plugin: DEBUG
-    org.geoserver.wms: WARN
-    org.geoserver.wfs: WARN
-    org.geoserver.jackson: DEBUG
-    org.geotools.jackson: DEBUG
-    org.geoserver.platform: ERROR
-    org.geoserver.jdbcconfig: INFO
+    org.geoserver: info
+    org.geoserver.catalog.plugin: debug
+    org.geoserver.wms: info
+    org.geoserver.wfs: info
+    org.geoserver.jackson: debug
+    org.geotools.jackson: debug
+    org.geoserver.platform: error
+    org.geoserver.platform.resource.MemoryLockProvider: info
+    org.geoserver.platform.resource.NioFileLockProvider: debug
+    org.geoserver.platform.resource.FileLockProvider: debug
+    org.geoserver.jdbcconfig: info
     # gs-cloud roots
-    org.geoserver.cloud: DEBUG
-    org.geoserver.cloud.autoconfigure: DEBUG
-    org.geoserver.cloud.config.factory: DEBUG
+    org.geoserver.cloud: info
+    org.geoserver.cloud.autoconfigure: trace
+    org.geoserver.cloud.config.factory: trace
     # bus debugging
-    org.geoserver.cloud.bus: TRACE
-    org.springframework.cloud.bus: DEBUG
-    org.springframework.cloud.bus.BusAutoConfiguration: DEBUG
-    org.springframework.cloud.bus.DefaultBusPathMatcher: INFO
+    org.geoserver.cloud.bus: trace
+    org.springframework.cloud.bus: debug
+    org.springframework.cloud.bus.BusAutoConfiguration: info
+    org.springframework.cloud.bus.DefaultBusPathMatcher: info
     # reactivefeign:
-    reactivefeign.client.log: DEBUG
+    reactivefeign.client.log: info
