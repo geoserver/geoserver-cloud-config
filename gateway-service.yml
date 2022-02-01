@@ -12,7 +12,7 @@
 # Please note any other prefix than the empty string will require a trailing slash in the root URL
 # for the redirection to the web-ui to work. This is something we need to fix. For example:
 # http://localhost:9090/geoserver-cloud will return 404, but http://localhost:9090/geoserver-cloud/ will work.
-geoserver.base-path:
+geoserver.base-path: ${geoserver_base_path:}
 
 # Configure routes to services. See https://cloud.spring.io/spring-cloud-gateway/single/spring-cloud-gateway.html
 server:
