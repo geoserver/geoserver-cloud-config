@@ -192,6 +192,8 @@ logging:
     # reactivefeign:
     reactivefeign.client.log: info
     org.springframework.cloud.config.server.environment.NativeEnvironmentRepository: warn
+    com.netflix.eureka.registry.AbstractInstanceRegistry: error # log flooding with "WARN No remote registry available for the remote region us-east-1"
+    com.netflix.discovery.shared.resolver.aws.ConfigClusterResolver: error # log flooding with "WARN No remote registry available for the remote region us-east-1"
 
 ---
 spring.config.activate.on-profile: local
