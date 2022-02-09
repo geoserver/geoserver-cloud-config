@@ -107,6 +107,7 @@ geoserver:
         maximumPoolSize: ${jdbcconfig.maxConnections:8}
   styling:
     css.enabled: true
+    mapbox.enabled: true
   wms:
     output-formats:
       vector-tiles:
