@@ -17,7 +17,6 @@ server:
       max: 20 #default: 200
 
 management:
-  server.port: 8081
   endpoints:
     enabled-by-default: true
     web.exposure.include: "*"
