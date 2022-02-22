@@ -179,10 +179,8 @@ logging:
     org.geotools.autoconfigure: info
     oshi.hardware.platform.linux: error
     oshi.software.os: error
-    org.geoserver: info
+    org.geoserver: warn
     org.geoserver.catalog.plugin: info
-    org.geoserver.wms: info
-    org.geoserver.wfs: info
     org.geoserver.jackson: info
     org.geotools.jackson: info
     org.geoserver.platform: error
