@@ -326,9 +326,10 @@ logging:
     org.geoserver.platform.resource.FileLockProvider: debug
     org.geoserver.jdbcconfig: info
     # gs-cloud roots
-    org.geoserver.cloud: info
+    org.geoserver.cloud: debug
     org.geoserver.cloud.autoconfigure: trace
     org.geoserver.cloud.config.factory: trace
+    org.geoserver.cloud.gwc: debug
     # bus debugging
     org.geoserver.cloud.bus: trace
     org.springframework.cloud.bus: debug
