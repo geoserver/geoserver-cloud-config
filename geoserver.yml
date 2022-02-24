@@ -157,6 +157,7 @@ geoserver:
     css.enabled: true
     mapbox.enabled: true
   wms:
+    reflector.enabled: true
     output-formats:
       vector-tiles:
         mapbox.enabled: true
