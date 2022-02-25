@@ -94,6 +94,7 @@ gwc:
   cache-directory: ${GEOWEBCACHE_CACHE_DIR:${geoserver.backend.data-directory.location}/gwc}
   rest-config: true
   web-ui: true
+  wms-integration: true
   services:
     wmts: true
     tms: true
