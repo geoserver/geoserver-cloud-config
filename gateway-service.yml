@@ -107,7 +107,7 @@ spring:
         - id: gwc
           uri: ${targets.gwc}
           predicates:
-            - Path=${geoserver.base-path}/gwc/**
+            - Path=${geoserver.base-path}/gwc/**,${geoserver.base-path}/{workspace}/gwc/**,${geoserver.base-path}/{workspace}/{layer}/gwc/**
         # Web UI configuration routes
         - id: webui
           uri: ${targets.webui}
