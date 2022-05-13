@@ -108,6 +108,9 @@ gwc:
 
 # GeoServer-Cloud common config properties
 geoserver:
+  metrics:
+    enabled: true
+    instance-id: ${info.instance-id}
   security:
     enabled: true
     authkey: true
@@ -233,9 +236,6 @@ backend.data-directory: false
 spring.config.activate.on-profile: catalog_service
 geoserver:
   security.enabled: false
-  metrics:
-    enabled: true
-    instance-id: ${info.instance-id}
   # Disable advertised catalog, it checks the org.geoserver.ows.Dispatcher.REQUEST to check if an OWS is in progress,
   # which can never be the case, and causes a java.lang.NoClassDefFoundError on org.springframework.web.servlet.mvc.AbstractController
   catalog:
