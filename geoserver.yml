@@ -1,110 +1,13 @@
-# shared application config for geoserver-cloud v1.0-SNAPSHOT
-server:
-  tomcat:
-    # Maximum number of connections that the server accepts and processes at any given time.
-    # Once the limit has been reached, the operating system may still accept connections based on the "acceptCount" property.
-    max-connections: 1000 # default: 8192
-    # Maximum queue length for incoming connection requests when all possible request processing threads are in use.
-    accept-count: 100 # default: 100
-    accesslog:
-      enabled: false
-      directory: logs
-      encoding: UTF-8
-    threads:
-      # Minimum amount of worker threads.
-      min-spare: 2 #default: 10
-      # Maximum amount of worker threads.
-      max: 20 #default: 200
+# This configuration file is imported by all geoserver-specific services' bootstrap.yml
+# For the sake of clarity, configuration properties relative to the spring-boot application
+# itself is imported from geoserver_spring.yml, and properties specific to geoserver from this file.
+spring.config.import: geoserver_spring.yml
 
-management:
-  endpoints:
-    enabled-by-default: true
-    web.exposure.include: "*"
-  endpoint:
-    info.enabled: true
-    metrics.enabled: true
-    shutdown.enabled: true
-    health:
-      enabled: true
-      probes.enabled: true
-      show-details: always
-  metrics:
-    binders:
-      processor.enabled: true
-      uptime.enabled: true
-      jvm.enabled: true
-    enable.all: true
-    enable.jvm: true
-    export:
-      atlas.enabled: false
-
-spring:
-  rabbitmq:
-    host: ${rabbitmq.host:rabbitmq}
-    port: ${rabbitmq.port:5672}
-    username: ${rabbitmq.user:guest}
-    password: ${rabbitmq.password:guest}
-  cloud:
-    bus:
-      enabled: true
-      id: ${info.instance-id} # use the same instance id for eureka (see service's' bootstrap.yml) and cloud-bus' rabbitmq instance id
-      trace.enabled: false #switch on tracing of acks (default off).
-    stream:
-      bindings:
-        springCloudBusOutput:
-          destination: gscatalog
-        springCloudBusInput:
-          destination: gscatalog
-  jackson:
-    default-property-inclusion: non-empty
-    serialization.indent-output: false #set to true if doing manual testing and want formatted output
-
-reactive.feign.cloud.enabled: true
-reactive.feign.hystrix.enabled: false
-
+# The following geoserver, geotools, and geowebcache configuration properties
+# are common to all geoserver microservices, despite some may not apply to a given service,
+# it's easier to have them all here in the default spring profile.
 # Common configuration for all services. Override or add service specific config
 # properties on each <service-name>-service.yml file
-
-# GeoTools HTTP Client proxy configuration, allows configuring cascaded WMS/WMTS/WFS stores
-# that need to go through an HTTP proxy without affecting all the http clients at the JVM level
-# These are default settings. The enabled property can be set to false to disable the custom
-# HTTPClientFactory altogether.
-# The following OS environment variables can be set for easier configuration:
-# HTTP(S)_PROXYHOST, HTTP(S)_PROXYPORT, HTTP(S)_PROXYUSER, HTTP(S)_PROXYPASSWORD, HTTP(S)_NONPROXYHOSTS
-geotools:
-  httpclient:
-    proxy:
-      enabled: true
-      http:
-        host: ${http.proxyHost:}
-        port: ${http.proxyPort:}
-        user: ${http.proxyUser:}
-        password: ${http.proxyPassword:}
-        nonProxyHosts: ${http.nonProxyHosts:localhost.*}
-        # comma separated list of Java regular expressions, e.g.: nonProxyHosts: localhost, example.*
-      https:
-        host: ${https.proxyHost:${geotools.httpclient.proxy.http.host}}
-        port: ${https.proxyPort:${geotools.httpclient.proxy.http.port}}
-        user: ${https.proxyUser:${geotools.httpclient.proxy.http.user}}
-        password: ${https.proxyPassword:${geotools.httpclient.proxy.http.password}}
-        nonProxyHosts: ${https.nonProxyHosts:${geotools.httpclient.proxy.http.nonProxyHosts}}
-
-gwc:
-  enabled: true
-  cache-directory: ${GEOWEBCACHE_CACHE_DIR:${geoserver.backend.data-directory.location}/gwc}
-  rest-config: true
-  web-ui: true
-  wms-integration: true
-  services:
-    wmts: true
-    tms: true
-    wms: true
-    kml: true
-    gmaps: true
-    mgmaps: true
-  blobstores:
-    azure: true
-    s3: true
 
 # GeoServer-Cloud common config properties
 geoserver:
@@ -168,47 +71,53 @@ geoserver:
         geojson.enabled: true
         topojson.enabled: true
 
-logging:
-  level:
-    root: warn
-    org.springframework: warn
-    org.springframework.cloud.bus: info
-    org.springframework.retry: info
-    org.springframework.jdbc.support: info
-    com.zaxxer.hikari.pool: OFF
-    # reactivefeign:
-    reactivefeign.client.log: info
-#    com.netflix.eureka.registry.AbstractInstanceRegistry: error # log flooding with "WARN No remote registry available for the remote region us-east-1"
-#    com.netflix.discovery.shared.resolver.aws.ConfigClusterResolver: error # log flooding with "WARN No remote registry available for the remote region us-east-1"
-    # geoserver roots
-    org.geotools.autoconfigure: info
-    oshi.hardware.platform.linux: error
-    oshi.software.os: error
-    org.geoserver: warn
-    org.geoserver.catalog.plugin: info
-    org.geoserver.jackson: info
-    org.geotools.jackson: info
-    org.geoserver.platform: error
-    org.geoserver.platform.resource.MemoryLockProvider: info
-    org.geoserver.platform.resource.NioFileLockProvider: info
-    org.geoserver.platform.resource.FileLockProvider: info
-    org.geoserver.jdbcconfig: info
-    # gs-cloud roots
-    org.geoserver.cloud: info
-    org.geoserver.cloud.autoconfigure: info
-    org.geoserver.cloud.config.factory: info
-    # bus debugging
-    org.geoserver.cloud.bus: info
-    org.springframework.cloud.bus.BusAutoConfiguration: info
-    org.springframework.cloud.bus.DefaultBusPathMatcher: info
----
-# this profile is automatically included if any of the embedded
-# config_first or discovery_first profile groups are active
-spring.config.activate.on-profile: discovery_eureka
-# Should only be set in application.yml. Setting the value in bootstrap.yml will cause undesirable side effects like registering in eureka with an UNKNOWN status.
-# See https://cloud.spring.io/spring-cloud-netflix/2.0.x/multi/multi__service_discovery_eureka_clients.html#_eureka_s_health_checks
-eureka.client.healthcheck.enabled: true
-eureka.server.url: http://discovery:8761/eureka
+# GeoTools HTTP Client proxy configuration, allows configuring cascaded WMS/WMTS/WFS stores
+# that need to go through an HTTP proxy without affecting all the http clients at the JVM level
+# These are default settings. The enabled property can be set to false to disable the custom
+# HTTPClientFactory altogether.
+# The following OS environment variables can be set for easier configuration:
+# HTTP(S)_PROXYHOST, HTTP(S)_PROXYPORT, HTTP(S)_PROXYUSER, HTTP(S)_PROXYPASSWORD, HTTP(S)_NONPROXYHOSTS
+geotools:
+  httpclient:
+    proxy:
+      enabled: true
+      http:
+        host: ${http.proxyHost:}
+        port: ${http.proxyPort:}
+        user: ${http.proxyUser:}
+        password: ${http.proxyPassword:}
+        nonProxyHosts: ${http.nonProxyHosts:localhost.*}
+        # comma separated list of Java regular expressions, e.g.: nonProxyHosts: localhost, example.*
+      https:
+        host: ${https.proxyHost:${geotools.httpclient.proxy.http.host}}
+        port: ${https.proxyPort:${geotools.httpclient.proxy.http.port}}
+        user: ${https.proxyUser:${geotools.httpclient.proxy.http.user}}
+        password: ${https.proxyPassword:${geotools.httpclient.proxy.http.password}}
+        nonProxyHosts: ${https.nonProxyHosts:${geotools.httpclient.proxy.http.nonProxyHosts}}
+
+# GeoWebCache-specific configuration properties, apply to services that run some GWC
+# internal components. For example, all of gwc-service, wms-service, and web-ui, will
+# need to access GeoWebCache's blob stores, and tile-layer configuration resources.
+# wms-service and web-ui won't event load components related to GWC REST/Web APIs, web UI,
+# and others. Unlike web-ui, wms-service will load the internal components needed for
+# on-demand tile seeding in order to serve WMC-C tiled requests if gwc.wms-integration=true,
+# so that gwc/wms-c integration workds independently of gwc-service.
+gwc:
+  enabled: true
+  cache-directory: ${GEOWEBCACHE_CACHE_DIR:${geoserver.backend.data-directory.location}/gwc}
+  rest-config: true
+  web-ui: true
+  wms-integration: true
+  services:
+    wmts: true
+    tms: true
+    wms: true
+    kml: true
+    gmaps: true
+    mgmaps: true
+  blobstores:
+    azure: true
+    s3: true
 
 ###################################################
 #### GeoServer configuration backend profiles: ####
@@ -233,34 +142,6 @@ backend.data-directory: false
 #############################################
 #### per microservice-specific profiles: ####
 ---
-spring.config.activate.on-profile: catalog_service
-geoserver:
-  security.enabled: false
-  # Disable advertised catalog, it checks the org.geoserver.ows.Dispatcher.REQUEST to check if an OWS is in progress,
-  # which can never be the case, and causes a java.lang.NoClassDefFoundError on org.springframework.web.servlet.mvc.AbstractController
-  catalog:
-    advertised: false
-    # Disable LocalWorkspaceCatalog decorator, this service exposes a "raw catalog" backend, there's no concept of local workspaces
-    localWorkspace: false
-    secure: false
-    # enable caching while using the jdbcconfig backend, we've disabled its own internal caching due to concurrency related bugs
-    caching.enabled: ${geoserver.backend.jdbcconfig.enabled}
-  catalog-service:
-    io-threads:
-      # Number of back-end threads to hit the actual catalog with. Defaults 4 * number of cores if unset.
-      # If using jdbcconfig, let io-threads be about half the size of geoserver.backend.jdbcconfig.datasource.maximumPoolSize, 
-      # it has the tendency to use more than one jdbc connection for some requests.
-      max-size: ${catalog.io.threads:8}
-      # maximum number of queued requests per worker thread before rejecting new requests 
-      max-queued: ${catalog.io.maxQueued:10000}
-  bus:
-    # receive events but don't publish, it's the front catalogs that publish events to better track where the changes come from
-    send-events: false
-  backend:
-    # decide which catalog backend to use on this service, default to using jdbcconfig
-    jdbcconfig.enabled: ${backend.jdbcconfig:true}
-
----
 spring.config.activate.on-profile: wfs_service
 ---
 spring.config.activate.on-profile: wms_service
@@ -270,6 +151,8 @@ spring.config.activate.on-profile: wcs_service
 spring.config.activate.on-profile: wps_service
 ---
 spring.config.activate.on-profile: restconfig_service
+---
+spring.config.activate.on-profile: gwc_service
 ---
 spring.config.activate.on-profile: webui_service
 geoserver:
@@ -309,34 +192,27 @@ geoserver:
       resource-browser: true
       catalog-bulk-load: true
 ---
-spring.config.activate.on-profile: gwc_service
----
-spring.config.activate.on-profile: debug
-logging:
-  level:
-    root: info
-    org.springframework: info
-    # geoserver roots
-    org.geoserver: info
-    org.geoserver.catalog.plugin: debug
-    org.geoserver.wms: info
-    org.geoserver.wfs: info
-    org.geoserver.jackson: debug
-    org.geotools.jackson: debug
-    org.geoserver.platform: error
-    org.geoserver.platform.resource.MemoryLockProvider: info
-    org.geoserver.platform.resource.NioFileLockProvider: debug
-    org.geoserver.platform.resource.FileLockProvider: debug
-    org.geoserver.jdbcconfig: info
-    # gs-cloud roots
-    org.geoserver.cloud: debug
-    org.geoserver.cloud.autoconfigure: trace
-    org.geoserver.cloud.config.factory: trace
-    org.geoserver.cloud.gwc: debug
-    # bus debugging
-    org.geoserver.cloud.bus: trace
-    org.springframework.cloud.bus: debug
-    org.springframework.cloud.bus.BusAutoConfiguration: info
-    org.springframework.cloud.bus.DefaultBusPathMatcher: info
-    # reactivefeign:
-    reactivefeign.client.log: info
+spring.config.activate.on-profile: catalog_service
+geoserver:
+  security.enabled: false
+  # Disable advertised catalog, it checks the org.geoserver.ows.Dispatcher.REQUEST to check if an OWS is in progress,
+  # which can never be the case, and causes a java.lang.NoClassDefFoundError on org.springframework.web.servlet.mvc.AbstractController
+  catalog:
+    advertised: false
+    # Disable LocalWorkspaceCatalog decorator, this service exposes a "raw catalog" backend, there's no concept of local workspaces
+    localWorkspace: false
+    secure: false
+    # enable caching while using the jdbcconfig backend, we've disabled its own internal caching due to concurrency related bugs
+    caching.enabled: ${geoserver.backend.jdbcconfig.enabled}
+  catalog-service:
+    io-threads:
+      # Number of back-end threads to hit the actual catalog with. Defaults 4 * number of cores if unset.
+      # If using jdbcconfig, let io-threads be about half the size of geoserver.backend.jdbcconfig.datasource.maximumPoolSize, 
+      # it has the tendency to use more than one jdbc connection for some requests.
+      max-size: ${catalog.io.threads:8}
+      # maximum number of queued requests per worker thread before rejecting new requests 
+      max-queued: ${catalog.io.maxQueued:10000}
+  # receive events but don't publish, it's the front catalogs that publish events to better track where the changes come from
+  bus.send-events: false    
+  # decide which catalog backend to use on this service, defaults to jdbcconfig
+  backend.jdbcconfig.enabled: ${backend.jdbcconfig:true}
