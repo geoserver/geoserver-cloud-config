@@ -21,9 +21,10 @@ geoserver:
   catalog:
     advertised: true
     localWorkspace: true
+    isolated: true
     secure: true
-    # enable caching if using the catalog-service as backend
-    caching.enabled: ${geoserver.backend.catalog-service.enabled}
+    # enable if needed on a backend-specific profile (e.g. jdbcconfig)
+    caching.enabled: false
   bus:
     # whether to send distributed events (i.e. acts as master). All instances receive remote events.
     send-events: true
@@ -58,8 +59,10 @@ geoserver:
         password: ${jdbcconfig.password:geo5erver}
         driverClassname: ${jdbcconfig.driverClassname:org.postgresql.Driver}
         # optional:
-        minimumIdle: ${jdbcconfig.minConnections:2}
+        minimumIdle: ${jdbcconfig.minConnections:0}
         maximumPoolSize: ${jdbcconfig.maxConnections:8}
+        connectionTimeout: ${jdbcconfig.connectionTimeout:250}
+        idleTimeout: ${jdbcconfig.idleTimeout:10000}
   styling:
     css.enabled: true
     mapbox.enabled: true
@@ -133,11 +136,22 @@ backend.jdbcconfig: true
 backend.catalog: false
 backend.data-directory: false
 
+geoserver:
+  catalog:
+    # not sure why isolated workspaces don't work with jdbcconfig as backend
+    isolated: false
+    # enable caching if using the jdbcconfig as backend, reduces the number of db roundtrips considerably
+    caching.enabled: true
+
 ---
 spring.config.activate.on-profile: catalog
 backend.catalog: true
 backend.jdbcconfig: false
 backend.data-directory: false
+geoserver:
+  catalog:
+    # enable caching if using the catalog-client as backend
+    caching.enabled: true
 
 #############################################
 #### per microservice-specific profiles: ####
@@ -199,9 +213,10 @@ geoserver:
   # which can never be the case, and causes a java.lang.NoClassDefFoundError on org.springframework.web.servlet.mvc.AbstractController
   catalog:
     advertised: false
-    # Disable LocalWorkspaceCatalog decorator, this service exposes a "raw catalog" backend, there's no concept of local workspaces
+    # Disable catalog decorators, this service exposes a "raw catalog" backend
     localWorkspace: false
     secure: false
+    isolated: false
     # enable caching while using the jdbcconfig backend, we've disabled its own internal caching due to concurrency related bugs
     caching.enabled: ${geoserver.backend.jdbcconfig.enabled}
   catalog-service:
@@ -216,3 +231,8 @@ geoserver:
   bus.send-events: false    
   # decide which catalog backend to use on this service, defaults to jdbcconfig
   backend.jdbcconfig.enabled: ${backend.jdbcconfig:true}
+---
+# local profile, used for development only. Other settings like config and eureka urls in gs_cloud_bootstrap_profiles.yml
+spring.config.activate.on-profile: local
+geoserver.backend.jdbcconfig.datasource.url: jdbc:postgresql://localhost:54321/geoserver_config?currentSchema=public
+
