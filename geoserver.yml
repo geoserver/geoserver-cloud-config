@@ -11,6 +11,10 @@ spring.config.import: geoserver_spring.yml
 
 # GeoServer-Cloud common config properties
 geoserver:
+  debug:
+    # add an X-gs-cloud-service-id:<service-id> response header to each response
+    # to track which cluster node replied
+    instanceId: false
   metrics:
     enabled: true
     instance-id: ${info.instance-id}
