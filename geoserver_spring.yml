@@ -93,6 +93,7 @@ logging:
     org.geoserver.cloud.config.factory: info
     # bus debugging
     org.geoserver.cloud.bus: info
+    org.geoserver.cloud.event: info
     org.springframework.cloud.bus.BusAutoConfiguration: info
     org.springframework.cloud.bus.DefaultBusPathMatcher: info
 
@@ -131,6 +132,7 @@ logging:
     org.geoserver.cloud.gwc: debug
     # bus debugging
     org.geoserver.cloud.bus: trace
+    org.geoserver.cloud.event: debug
     org.springframework.cloud.bus: debug
     org.springframework.cloud.bus.BusAutoConfiguration: info
     org.springframework.cloud.bus.DefaultBusPathMatcher: info
