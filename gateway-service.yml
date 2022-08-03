@@ -78,6 +78,10 @@ spring:
           predicates:
             - Path=${geoserver.base-path}/ows,${geoserver.base-path}/{workspace}/ows,${geoserver.base-path}/{workspace}/{layer}/ows
             - RegExpQuery=(?i:service),(?i:wms) # match service=wms case insensitively
+        - id: kml # proxies requests to kml endpoints to the wms service
+          uri: ${targets.wms}
+          predicates:
+            - Path=${geoserver.base-path}/wms/kml,${geoserver.base-path}/{workspace}/wms/kml,${geoserver.base-path}/kml/icon/**
         # WCS routes
         - id: wcs # proxies requests to gateway-service:/wcs to wcs-service:/wcs
           uri: ${targets.wcs}
