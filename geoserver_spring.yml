@@ -87,6 +87,8 @@ logging:
     org.geoserver.platform.resource.NioFileLockProvider: info
     org.geoserver.platform.resource.FileLockProvider: info
     org.geoserver.jdbcconfig: info
+    org.geoserver.security: info
+    org.geoserver.cloud.security: info
     # gs-cloud roots
     org.geoserver.cloud: info
     org.geoserver.cloud.autoconfigure: info
@@ -125,6 +127,8 @@ logging:
     org.geoserver.platform.resource.NioFileLockProvider: debug
     org.geoserver.platform.resource.FileLockProvider: debug
     org.geoserver.jdbcconfig: info
+    org.geoserver.security: debug
+    org.geoserver.cloud.security: debug
     # gs-cloud roots
     org.geoserver.cloud: debug
     org.geoserver.cloud.autoconfigure: trace
