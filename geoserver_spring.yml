@@ -22,6 +22,7 @@ spring:
     port: ${rabbitmq.port:5672}
     username: ${rabbitmq.user:guest}
     password: ${rabbitmq.password:guest}
+    virtual-host: ${rabbitmq.vhost:}
   cloud:
     bus:
       enabled: true
