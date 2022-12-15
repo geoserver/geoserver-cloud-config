@@ -1,7 +1,9 @@
 # This configuration file is imported by all geoserver-specific services' bootstrap.yml
 # For the sake of clarity, configuration properties relative to the spring-boot application
 # itself is imported from geoserver_spring.yml, and properties specific to geoserver from this file.
-spring.config.import: geoserver_spring.yml
+spring.config.import:
+ - geoserver_spring.yml
+ - jndi.yml
 
 # The following geoserver, geotools, and geowebcache configuration properties
 # are common to all geoserver microservices, despite some may not apply to a given service,
