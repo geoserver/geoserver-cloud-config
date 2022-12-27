@@ -80,6 +80,7 @@ logging:
     oshi.hardware.platform.linux: error
     oshi.software.os: error
     org.geoserver: warn
+    org.geoserver.catalog.datadir: info
     org.geoserver.catalog.plugin: info
     org.geoserver.jackson: info
     org.geotools.jackson: info
@@ -118,6 +119,8 @@ logging:
     org.springframework: info
     # geoserver roots
     org.geoserver: info
+    org.geoserver.catalog: debug
+    org.geoserver.catalog.datadir: debug
     org.geoserver.catalog.plugin: debug
     org.geoserver.wms: info
     org.geoserver.wfs: info
@@ -132,6 +135,7 @@ logging:
     org.geoserver.cloud.security: debug
     # gs-cloud roots
     org.geoserver.cloud: debug
+    org.geoserver.cloud.config: debug
     org.geoserver.cloud.autoconfigure: trace
     org.geoserver.cloud.config.factory: trace
     org.geoserver.cloud.gwc: debug

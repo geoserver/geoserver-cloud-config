@@ -54,6 +54,8 @@ geoserver:
     data-directory:
       enabled: ${backend.data-directory:false}
       location: ${GEOSERVER_DATA_DIR:/opt/app/data_directory} 
+      # use optimized parallel datadirectory loader. Defaults to true
+      parallel-loader: true
     jdbcconfig:
       enabled: ${backend.jdbcconfig:false}
       initdb: true
