@@ -115,7 +115,7 @@ geotools:
 # on-demand tile seeding in order to serve WMC-C tiled requests if gwc.wms-integration=true,
 # so that gwc/wms-c integration workds independently of gwc-service.
 gwc:
-  enabled: true
+  enabled: ${GWC_INTEGRATION_ENABLED:true}
   cache-directory: ${GEOWEBCACHE_CACHE_DIR:${geoserver.backend.data-directory.location}/gwc}
   rest-config: true
   web-ui: true
