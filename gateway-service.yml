@@ -17,6 +17,7 @@ geoserver.base-path: ${geoserver_base_path:}
 # by default, assumes a discovery-client is in use, and perform client-side load balancing on
 # the advertised instances. See the 'static_routes' profile notes for a static config 
 targets:
+  acl: http://acl:8080
   catalog: lb://catalog-service
   wfs: lb://wfs-service
   wms: lb://wms-service
@@ -34,7 +35,12 @@ server:
 spring:
   cloud:
     gateway:
-      x-forwarded.for-enabled: true
+      x-forwarded:
+        for-enabled: true
+        host-enabled: true
+        port-enabled: true
+        proto-enabled: true
+        prefix-enabled: true
       globalcors:
         cors-configurations:
           "[/**]":
@@ -52,6 +58,10 @@ spring:
         verbose:
           enabled: true
       routes:
+        - id: acl
+          uri: ${targets.acl}
+          predicates:
+            - Path=${geoserver.base-path}/acl,${geoserver.base-path}/acl/**
         - id: catalog
           uri: ${targets.catalog}
           predicates:
@@ -165,6 +175,7 @@ targets:
 ---
 spring.config.activate.on-profile: local
 targets:
+  acl: http://localhost:9000
   catalog: http://localhost:9100
   wfs: http://localhost:9101
   wms: http://localhost:9102

@@ -19,7 +19,8 @@ geoserver:
     instanceId: false
   # Access Control List client config. Usually enabled through the acl spring profile.
   acl:
-    enabled: ${acl.enabled:true}
+    enabled: ${acl.enabled:false}
+    instanceName: ${acl.instanceName:default-gs}
     client:
       basePath: ${acl.url:http://acl:8080/api}
       username: ${acl.username:}
@@ -145,9 +146,9 @@ gwc:
 spring.config.activate.on-profile: acl
 
 acl.enabled: true
-acl.url: http://acl:8080/api
-acl.username:
-acl.password:
+acl.url: http://acl:8080/acl/api
+acl.username: admin
+acl.password: s3cr3t
 acl.debug: false
 
 ###################################################
@@ -200,7 +201,7 @@ spring.config.activate.on-profile: webui_service
 geoserver:
   backend.catalog-service.enabled: ${backend.catalog:true}
   web-ui:
-    acl.enabled: ${acl.enabled:true}
+    acl.enabled: ${geoserver.acl.enabled}
     file-browser.hide-file-system: ${webui.hide-filesystem:false}
     # These are all default values, here just for reference. You can omit them and add only the ones to disable or further configure
     security.enabled: true
@@ -264,5 +265,5 @@ geoserver:
 # local profile, used for development only. Other settings like config and eureka urls in gs_cloud_bootstrap_profiles.yml
 spring.config.activate.on-profile: local
 geoserver.backend.jdbcconfig.datasource.url: jdbc:postgresql://localhost:54321/geoserver_config?currentSchema=public
-acl.url: http://localhost:9000/api
+acl.url: http://localhost:9000/acl/api
 
