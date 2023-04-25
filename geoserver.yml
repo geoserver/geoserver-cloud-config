@@ -17,6 +17,14 @@ geoserver:
     # add an X-gs-cloud-service-id:<service-id> response header to each response
     # to track which cluster node replied
     instanceId: false
+  # Access Control List client config. Usually enabled through the acl spring profile.
+  acl:
+    enabled: ${acl.enabled:true}
+    client:
+      basePath: ${acl.url:http://acl:8080/api}
+      username: ${acl.username:}
+      password: ${acl.password:}
+      debug: ${acl.debug:false}
   metrics:
     enabled: true
     instance-id: ${info.instance-id}
@@ -131,6 +139,17 @@ gwc:
     azure: true
     s3: true
 
+---
+#########################################################
+#### Access Control List client applications profile ####
+spring.config.activate.on-profile: acl
+
+acl.enabled: true
+acl.url: http://acl:8080/api
+acl.username:
+acl.password:
+acl.debug: false
+
 ###################################################
 #### GeoServer configuration backend profiles: ####
 ---
@@ -181,6 +200,7 @@ spring.config.activate.on-profile: webui_service
 geoserver:
   backend.catalog-service.enabled: ${backend.catalog:true}
   web-ui:
+    acl.enabled: ${acl.enabled:true}
     file-browser.hide-file-system: ${webui.hide-filesystem:false}
     # These are all default values, here just for reference. You can omit them and add only the ones to disable or further configure
     security.enabled: true
@@ -244,4 +264,5 @@ geoserver:
 # local profile, used for development only. Other settings like config and eureka urls in gs_cloud_bootstrap_profiles.yml
 spring.config.activate.on-profile: local
 geoserver.backend.jdbcconfig.datasource.url: jdbc:postgresql://localhost:54321/geoserver_config?currentSchema=public
+acl.url: http://localhost:9000/api
 

@@ -75,12 +75,18 @@ logging:
     reactivefeign.client.log: info
     #    com.netflix.eureka.registry.AbstractInstanceRegistry: error # log flooding with "WARN No remote registry available for the remote region us-east-1"
     #    com.netflix.discovery.shared.resolver.aws.ConfigClusterResolver: error # log flooding with "WARN No remote registry available for the remote region us-east-1"
+    # geotools roots
+    org.geotools: info
+    org.geotools.util.factory: warn
+    org.geotools.referencing.factory: warn
+    org.geowebcache.config.XMLConfiguration: error
     # geoserver roots
     org.geotools.autoconfigure: info
     oshi.hardware.platform.linux: error
     oshi.software.os: error
     org.geoserver: warn
     org.geoserver.catalog.datadir: info
+    org.geoserver.catalog.datadir.internal: warn
     org.geoserver.catalog.plugin: info
     org.geoserver.jackson: info
     org.geotools.jackson: info
@@ -91,6 +97,9 @@ logging:
     org.geoserver.jdbcconfig: info
     org.geoserver.security: info
     org.geoserver.cloud.security: info
+    # gs-acl roots
+    org.geoserver.acl.plugin: info
+    org.geoserver.acl.api.client: info
     # gs-cloud roots
     org.geoserver.cloud: info
     org.geoserver.cloud.autoconfigure: info
@@ -133,6 +142,10 @@ logging:
     org.geoserver.jdbcconfig: info
     org.geoserver.security: debug
     org.geoserver.cloud.security: debug
+    # ACL
+    org.geoserver.acl: debug
+    org.geoserver.acl.plugin: debug
+    org.geoserver.acl.api.client: debug
     # gs-cloud roots
     org.geoserver.cloud: debug
     org.geoserver.cloud.config: debug
