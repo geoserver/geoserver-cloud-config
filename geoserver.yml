@@ -80,6 +80,22 @@ geoserver:
         maximumPoolSize: ${jdbcconfig.maxConnections:8}
         connectionTimeout: ${jdbcconfig.connectionTimeout:250}
         idleTimeout: ${jdbcconfig.idleTimeout:10000}
+    pgconfig:
+      enabled: ${backend.pgconfig:false}
+      initialize: ${pgconfig.initialize:true}
+      schema: ${pgconfig.schema:public}
+      create-schema: true
+      datasource:
+        jndi-name: ${pgconfig.jndi-name:}
+        url: "${pgconfig.url:jdbc:postgresql://${pgconfig.host:database}:${pgconfig.port:5432}/${pgconfig.database:geoserver_config}}"
+        username: ${pgconfig.username:pgconfig}
+        password: ${pgconfig.password:pgconfig}
+        driverClassname: ${pgconfig.driverClassname:org.postgresql.Driver}
+        # optional:
+        minimumIdle: ${pgconfig.minConnections:0}
+        maximumPoolSize: ${pgconfig.maxConnections:8}
+        connectionTimeout: ${pgconfig.connectionTimeout:250}
+        idleTimeout: ${pgconfig.idleTimeout:10000}
   styling:
     css.enabled: true
     mapbox.enabled: true
@@ -155,15 +171,11 @@ acl.debug: false
 #### GeoServer configuration backend profiles: ####
 ---
 spring.config.activate.on-profile: datadir
-backend.jdbcconfig: false
-backend.catalog: false
 backend.data-directory: true
 
 ---
 spring.config.activate.on-profile: jdbcconfig
 backend.jdbcconfig: true
-backend.catalog: false
-backend.data-directory: false
 
 geoserver:
   catalog:
@@ -175,12 +187,18 @@ geoserver:
 ---
 spring.config.activate.on-profile: catalog
 backend.catalog: true
-backend.jdbcconfig: false
-backend.data-directory: false
 geoserver:
   catalog:
     # enable caching if using the catalog-client as backend
     caching.enabled: true
+
+---
+spring.config.activate.on-profile: pgconfig
+backend.pgconfig: true
+jndi.datasources.pgconfig.enabled: true
+pgconfig.jndi-name: java:comp/env/jdbc/pgconfig
+pgconfig.schema: pgconfig
+pgconfig.initialize: true
 
 #############################################
 #### per microservice-specific profiles: ####
@@ -265,5 +283,6 @@ geoserver:
 # local profile, used for development only. Other settings like config and eureka urls in gs_cloud_bootstrap_profiles.yml
 spring.config.activate.on-profile: local
 geoserver.backend.jdbcconfig.datasource.url: jdbc:postgresql://localhost:54321/geoserver_config?currentSchema=public
+jndi.datasources.pgconfig.url: jdbc:postgresql://localhost:54322/pgconfig
 acl.url: http://localhost:9000/acl/api
 

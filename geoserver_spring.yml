@@ -73,8 +73,8 @@ logging:
     com.zaxxer.hikari.pool: OFF
     # reactivefeign:
     reactivefeign.client.log: info
-    #    com.netflix.eureka.registry.AbstractInstanceRegistry: error # log flooding with "WARN No remote registry available for the remote region us-east-1"
-    #    com.netflix.discovery.shared.resolver.aws.ConfigClusterResolver: error # log flooding with "WARN No remote registry available for the remote region us-east-1"
+    # log flooding with "INFO Resolving eureka endpoints via configuration"
+    com.netflix.discovery.shared.resolver.aws.ConfigClusterResolver: warn
     # geotools roots
     org.geotools: info
     org.geotools.util.factory: warn
