@@ -208,7 +208,7 @@ geoserver:
     wfs.enabled: ${webui.wfs.enabled:true}
     wms.enabled: ${webui.wms.enabled:true}
     wcs.enabled: ${webui.wcs.enabled:true}
-    wps.enabled: false # not working yet
+    wps.enabled: ${webui.wps.enabled:true}
     gwc:
       enabled: ${gwc.enabled:false}
       capabilities:
