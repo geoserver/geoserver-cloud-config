@@ -26,6 +26,7 @@ targets:
   rest: lb://restconfig-v1
   gwc: lb://gwc-service
   webui: lb://web-ui
+  webui-demo: lb://web-ui
 
 # Configure routes to services. See https://cloud.spring.io/spring-cloud-gateway/single/spring-cloud-gateway.html
 server:
@@ -129,7 +130,11 @@ spring:
           predicates:
             - Path=${geoserver.base-path}/**
           #- Path=${geoserver.base-path},${geoserver.base-path}/,${geoserver.base-path}/index.html,${geoserver.base-path}/web,${geoserver.base-path}/web/**,${geoserver.base-path}/j_spring_security_check,${geoserver.base-path}/j_spring_security_logout
-
+        # WebUi - demo
+        - id: webui_demo
+          uri: ${targets.webui-demo}
+          predicates:
+           - Path=${geoserver.base-path}/TestWfsPost
 management:
   endpoints:
     enabled-by-default: true
