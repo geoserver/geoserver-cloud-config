@@ -33,4 +33,16 @@ jndi:
       minimum-idle: 2
       connection-timeout: 250
       idle-timeout: 60000
+    pgconfig:
+      enabled: false
+      schema: pgconfig
+      wait-for-it: true
+      wait-timeout: 10
+      url: jdbc:postgresql://pgconfig:5432/pgconfig
+      username: pgconfig
+      password: pgconfig
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 2500
+      idle-timeout: 60000
       
