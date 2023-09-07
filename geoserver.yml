@@ -283,6 +283,6 @@ geoserver:
 # local profile, used for development only. Other settings like config and eureka urls in gs_cloud_bootstrap_profiles.yml
 spring.config.activate.on-profile: local
 geoserver.backend.jdbcconfig.datasource.url: jdbc:postgresql://localhost:54321/geoserver_config?currentSchema=public
-jndi.datasources.pgconfig.url: jdbc:postgresql://localhost:54322/pgconfig
+jndi.datasources.pgconfig.url: jdbc:postgresql://localhost:54322/pgconfigdb
 acl.url: http://localhost:9000/acl/api
 
