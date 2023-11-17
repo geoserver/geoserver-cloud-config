@@ -1,5 +1,3 @@
-geoserver.base-path: ${geoserver_base_path:}
-
 jndi:
   datasources:
     acl:
@@ -41,17 +39,6 @@ geoserver:
             enabled: true
             # password is a bcrypt encoded value for s3cr3t
             password: "{bcrypt}$2a$10$eMyaZRLZBAZdor8nOX.qwuwOyWazXjR2hddGLCT6f6c382WiwdQGG"
-
-springdoc:
-  cache.disabled: true
-  api-docs:
-    enabled: true
-    path: /api-docs
-  swagger-ui:
-    enabled: true
-    use-root-path: true
-    config-url: ${geoserver.base-path}/acl/api-docs/swagger-config
-    url: ${geoserver.base-path}/acl/api-docs
 
 
 logging:

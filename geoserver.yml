@@ -22,7 +22,7 @@ geoserver:
     enabled: ${acl.enabled:false}
     instanceName: ${acl.instanceName:default-gs}
     client:
-      basePath: ${acl.url:http://acl:8080/api}
+      basePath: ${acl.url:http://acl:8080/acl/api}
       username: ${acl.username:}
       password: ${acl.password:}
       debug: ${acl.debug:false}

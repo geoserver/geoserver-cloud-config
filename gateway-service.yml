@@ -60,16 +60,18 @@ spring:
         verbose:
           enabled: true
       routes:
+        - id: aclroot
+          uri: ${targets.acl}
+          predicates:
+          - Path=/acl
+          filters:
+          #- StripBasePath=/acl #remove the base path on downstream requests
+          #- RewritePath=/acl/(?<segment>.*),/$\{segment}
+          - RewritePath=/acl,/acl/
         - id: acl
           uri: ${targets.acl}
           predicates:
-            - Path=${geoserver.base-path}/acl,${geoserver.base-path}/acl/**
-        - id: catalog
-          uri: ${targets.catalog}
-          predicates:
-            - Path=${geoserver.base-path}/api/v1/**
-          filters: # Expose the catalog and configuration API only if the dev profile is active
-            - RouteProfile=dev,403
+          - Path=/acl/**
         # WFS routes
         - id: wfs # proxies requests to gateway-service:/wfs to wfs-service:/wfs
           uri: ${targets.wfs}
@@ -178,6 +180,13 @@ targets:
   rest: http://rest:8080
   gwc: http://gwc:8080
   webui: http://webui:8080
+---
+spring.config.activate.on-profile: debug
+
+logging:
+   level:
+      root: debug
+
 ---
 spring.config.activate.on-profile: local
 targets:
