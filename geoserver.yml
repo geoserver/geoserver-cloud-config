@@ -20,7 +20,6 @@ geoserver:
   # Access Control List client config. Usually enabled through the acl spring profile.
   acl:
     enabled: ${acl.enabled:false}
-    instanceName: ${acl.instanceName:default-gs}
     client:
       basePath: ${acl.url:http://acl:8080/acl/api}
       username: ${acl.username:}
