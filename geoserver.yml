@@ -227,11 +227,11 @@ geoserver:
     wcs.enabled: ${webui.wcs.enabled:true}
     wps.enabled: ${webui.wps.enabled:true}
     gwc:
-      enabled: ${gwc.enabled:false}
+      enabled: ${gwc.enabled:true}
       capabilities:
-        tms: ${gwc.services.tms:false}
-        wmts: ${gwc.services.wmts:false}
-        wmsc: ${gwc.services.wms:false}
+        tms: ${gwc.services.tms:true}
+        wmts: ${gwc.services.wmts:true}
+        wmsc: ${gwc.services.wms:true}
     extensions:
       importer.enabled: ${webui.importer.enabled:false}
       geostyler.enabled: ${webui.geostyler.enabled:true}
