@@ -49,16 +49,7 @@ geoserver:
     send-diff: ${geoserver.backend.data-directory.enabled}
   backend:
     # configure catalog backends and decide which backend to use on this service.
-    # All backends are disabled, enable the required one on each service. For example, the catalog microservice 
-    # will enable one backend type, and the front services the catalog-service backend.
-    # revisit: Could be split into profiles
-    catalog-service:
-      enabled: ${backend.catalog:false}
-      # Base URI of the catalog service. If not set, will be automatically determined using the discovery service, looking for "catalog-service"
-      # This allows to explicitly set a fixed location for the catalog service.
-      # uri: http://catalog:8080
-      cache-directory: ${java.io.tmpdir}/cngs/catalog-client/resource_store
-      fallback-resource-directory: ${java.io.tmpdir}/cngs/catalog-client/fallback_resource_store
+    # All backends are disabled, enable the required one on each service. 
     data-directory:
       enabled: ${backend.data-directory:false}
       location: ${GEOSERVER_DATA_DIR:/opt/app/data_directory} 
@@ -184,14 +175,6 @@ geoserver:
     caching.enabled: false
 
 ---
-spring.config.activate.on-profile: catalog
-backend.catalog: true
-geoserver:
-  catalog:
-    # enable caching if using the catalog-client as backend
-    caching.enabled: true
-
----
 spring.config.activate.on-profile: pgconfig
 backend.pgconfig: true
 jndi.datasources.pgconfig.enabled: true
@@ -216,7 +199,6 @@ spring.config.activate.on-profile: gwc_service
 ---
 spring.config.activate.on-profile: webui_service
 geoserver:
-  backend.catalog-service.enabled: ${backend.catalog:true}
   web-ui:
     acl.enabled: ${geoserver.acl.enabled}
     file-browser.hide-file-system: ${webui.hide-filesystem:false}
@@ -252,32 +234,6 @@ geoserver:
       enabled: ${webui.tools.enabled:true}
       resource-browser: true
       catalog-bulk-load: true
----
-spring.config.activate.on-profile: catalog_service
-geoserver:
-  security.enabled: false
-  # Disable advertised catalog, it checks the org.geoserver.ows.Dispatcher.REQUEST to check if an OWS is in progress,
-  # which can never be the case, and causes a java.lang.NoClassDefFoundError on org.springframework.web.servlet.mvc.AbstractController
-  catalog:
-    advertised: false
-    # Disable catalog decorators, this service exposes a "raw catalog" backend
-    localWorkspace: false
-    secure: false
-    isolated: false
-    # enable caching while using the jdbcconfig backend, we've disabled its own internal caching due to concurrency related bugs
-    caching.enabled: ${geoserver.backend.jdbcconfig.enabled}
-  catalog-service:
-    io-threads:
-      # Number of back-end threads to hit the actual catalog with. Defaults 4 * number of cores if unset.
-      # If using jdbcconfig, let io-threads be about half the size of geoserver.backend.jdbcconfig.datasource.maximumPoolSize, 
-      # it has the tendency to use more than one jdbc connection for some requests.
-      max-size: ${catalog.io.threads:8}
-      # maximum number of queued requests per worker thread before rejecting new requests 
-      max-queued: ${catalog.io.maxQueued:10000}
-  # receive events but don't publish, it's the front catalogs that publish events to better track where the changes come from
-  bus.send-events: false    
-  # decide which catalog backend to use on this service, defaults to jdbcconfig
-  backend.jdbcconfig.enabled: ${backend.jdbcconfig:true}
 ---
 # local profile, used for development only. Other settings like config and eureka urls in gs_cloud_bootstrap_profiles.yml
 spring.config.activate.on-profile: local
