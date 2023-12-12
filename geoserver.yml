@@ -216,7 +216,6 @@ geoserver:
         wmsc: ${gwc.services.wms:true}
     extensions:
       importer.enabled: ${webui.importer.enabled:false}
-      geostyler.enabled: ${webui.geostyler.enabled:true}
     demos:
       enabled: ${webui.demos.enabled:true}
       wps-request-builder: true
