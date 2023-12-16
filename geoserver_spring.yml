@@ -160,3 +160,11 @@ logging:
     org.springframework.cloud.bus.DefaultBusPathMatcher: info
     # reactivefeign:
     reactivefeign.client.log: info
+
+---
+spring.config.activate.on-profile: acl_debug
+logging:
+  level:
+    org.geoserver.acl: debug
+    org.geoserver.acl.plugin: debug
+    org.geoserver.acl.api.client: debug

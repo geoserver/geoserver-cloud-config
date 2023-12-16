@@ -58,3 +58,9 @@ management:
       exposure:
         include:
         - '*'
+
+---
+spring.config.activate.on-profile: acl_debug
+logging:
+  level:
+    org.geoserver.acl: debug
