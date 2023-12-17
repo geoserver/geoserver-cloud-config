@@ -153,7 +153,7 @@ spring.config.activate.on-profile: acl
 
 acl.enabled: true
 acl.url: http://acl:8080/acl/api
-acl.username: admin
+acl.username: geoserver
 acl.password: s3cr3t
 acl.debug: false
 
