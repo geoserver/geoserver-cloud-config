@@ -5,6 +5,27 @@ spring.config.import:
  - geoserver_spring.yml
  - jndi.yml
 
+spring:
+  # cache implementation to use if `geoserver.backend.caching.enabled: true`
+  cache:
+    cache-names: gs-config, gs-catalog
+    type: caffeine
+    caffeine:
+      #CaffeineSpec supports parsing configuration off of a string
+      #The string syntax is a series of comma-separated keys or key-value pairs, each corresponding to a Caffeine builder method.
+      #
+      #initialCapacity=[integer]
+      #maximumSize=[long]
+      #maximumWeight=[long]
+      #expireAfterAccess=[duration]
+      #expireAfterWrite=[duration]
+      #refreshAfterWrite=[duration]
+      #weakKeys: sets Caffeine.weakKeys.
+      #weakValues: sets Caffeine.weakValues.
+      #softValues: sets Caffeine.softValues.
+      #recordStats: sets Caffeine.recordStats.
+      spec: softValues,initialCapacity=10000
+
 # The following geoserver, geotools, and geowebcache configuration properties
 # are common to all geoserver microservices, despite some may not apply to a given service,
 # it's easier to have them all here in the default spring profile.
@@ -162,7 +183,6 @@ acl.debug: false
 ---
 spring.config.activate.on-profile: datadir
 backend.data-directory: true
-
 ---
 spring.config.activate.on-profile: jdbcconfig
 backend.jdbcconfig: true
@@ -234,10 +254,31 @@ geoserver:
       resource-browser: true
       catalog-bulk-load: true
 ---
-# local profile, used for development only. Other settings like config and eureka urls in gs_cloud_bootstrap_profiles.yml
+#############################################
 spring.config.activate.on-profile: local
-geoserver.backend.jdbcconfig.datasource.url: jdbc:postgresql://localhost:54321/geoserver_config?currentSchema=public
-jndi.datasources.pgconfig.url: jdbc:postgresql://localhost:8432/pgconfig
-jndi.datasources.postgis.url: jdbc:postgresql://localhost:6432/postgis
+## `local` profile, used for development only.
+## Match ports to the ones defined in the development docker compose file
+## allows to run an application from the IDE and join the cluster, providing environment
+## variables that otherwise would be given by docker-compose.yml.
+## It is safe to remove this profile completely in a production deployment config.
+rabbitmq.host: localhost
+rabbitmq.port: 5672
+eureka.server.url: http://localhost:8761/eureka
+config.server.url: http://localhost:8888
+
 acl.url: http://localhost:9000/acl/api
 
+jdbcconfig.url: jdbc:postgresql://localhost:54321/geoserver_config
+jdbcconfig.username: geoserver
+jdbcconfig.password: geo5erver
+
+jndi:
+   datasources:
+      postgis.url: jdbc:postgresql://localhost:6432/postgis
+      pgconfig.url: jdbc:postgresql://localhost:8432/pgconfig
+
+GEOWEBCACHE_CACHE_DIR: ${GEOSERVER_DATA_DIR:/tmp}/gwc
+
+#geoserver.catalog.caching.enabled: true
+#geoserver.catalog.advertised: false
+                                         
