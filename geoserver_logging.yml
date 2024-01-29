@@ -7,6 +7,7 @@ spring:
       debug:
         - "logging_debug"
         - "logging_debug_catalog"
+        - "logging_debug_locks"
         - "logging_debug_acl"
 logging:
   level:
@@ -34,9 +35,7 @@ logging:
     org.geoserver.jackson: info
     org.geotools.jackson: info
     org.geoserver.platform: error
-    org.geoserver.platform.resource.MemoryLockProvider: info
-    org.geoserver.platform.resource.NioFileLockProvider: info
-    org.geoserver.platform.resource.FileLockProvider: info
+    org.geoserver.platform.resource: info
     org.geoserver.jdbcconfig: info
     org.geoserver.security: info
     org.geoserver.cloud.security: info
@@ -63,9 +62,6 @@ logging:
     org.geoserver.catalog: debug
     org.geoserver.jackson: debug
     org.geotools.jackson: debug
-    org.geoserver.platform.resource.MemoryLockProvider: info
-    org.geoserver.platform.resource.NioFileLockProvider: debug
-    org.geoserver.platform.resource.FileLockProvider: debug
     org.geoserver.security: debug
     org.geoserver.cloud.security: debug
     # gs-cloud roots
@@ -105,6 +101,20 @@ logging:
     org.springframework.cloud.bus.BusAutoConfiguration: info
     org.springframework.cloud.bus.DefaultBusPathMatcher: info
 
+---
+spring.config.activate.on-profile: logging_debug_locks
+logging:
+  level:
+    org.geoserver.GeoServerConfigurationLock: trace
+    org.geoserver.platform.resource.MemoryLockProvider: trace
+    org.geoserver.platform.resource.FileLockProvider: trace
+    org.geoserver.platform.resource.NioFileLockProvider: trace
+    org.geoserver.platform.resource.NioFileLock: trace
+    org.geoserver.cloud.backend.pgsql.resource.PgsqlLockProvider: trace
+    org.geoserver.jdbcstore.locks: trace
+    org.geoserver.cloud.config.catalog.backend.datadirectory: trace
+    org.geoserver.catalog.plugin.locking: trace
+    org.geoserver.cloud.catalog.locking: trace
 ---
 spring.config.activate.on-profile: logging_debug_acl
 logging:
