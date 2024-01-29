@@ -3,6 +3,7 @@
 # itself is imported from geoserver_spring.yml, and properties specific to geoserver from this file.
 spring.config.import:
  - geoserver_spring.yml
+ - optional:geoserver_logging.yml
  - jndi.yml
 
 spring:

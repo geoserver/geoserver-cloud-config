@@ -38,9 +38,6 @@ spring:
     default-property-inclusion: non-empty
     serialization.indent-output: false #set to true if doing manual testing and want formatted output
 
-reactive.feign.cloud.enabled: true
-reactive.feign.hystrix.enabled: false
-
 management:
   endpoints:
     enabled-by-default: true
@@ -62,54 +59,6 @@ management:
     enable.jvm: true
     export:
       atlas.enabled: false
-
-logging:
-  level:
-    root: warn
-    org.springframework: warn
-    org.springframework.cloud.bus: info
-    org.springframework.retry: info
-    org.springframework.jdbc.support: info
-    com.zaxxer.hikari.pool: OFF
-    # reactivefeign:
-    reactivefeign.client.log: info
-    # log flooding with "INFO Resolving eureka endpoints via configuration"
-    com.netflix.discovery.shared.resolver.aws.ConfigClusterResolver: warn
-    # geotools roots
-    org.geotools: info
-    org.geotools.util.factory: warn
-    org.geotools.referencing.factory: warn
-    org.geowebcache.config.XMLConfiguration: error
-    # geoserver roots
-    org.geotools.autoconfigure: info
-    oshi.hardware.platform.linux: error
-    oshi.software.os: error
-    org.geoserver: warn
-    org.geoserver.catalog.datadir: info
-    org.geoserver.catalog.datadir.internal: warn
-    org.geoserver.catalog.plugin: info
-    org.geoserver.jackson: info
-    org.geotools.jackson: info
-    org.geoserver.platform: error
-    org.geoserver.platform.resource.MemoryLockProvider: info
-    org.geoserver.platform.resource.NioFileLockProvider: info
-    org.geoserver.platform.resource.FileLockProvider: info
-    org.geoserver.jdbcconfig: info
-    org.geoserver.security: info
-    org.geoserver.cloud.security: info
-    # gs-acl roots
-    org.geoserver.acl.plugin: info
-    org.geoserver.acl.api.client: info
-    # gs-cloud roots
-    org.geoserver.cloud: info
-    org.geoserver.cloud.autoconfigure: info
-    org.geoserver.cloud.config.factory: info
-    # bus debugging
-    org.geoserver.cloud.bus: info
-    org.geoserver.cloud.event: info
-    org.springframework.cloud.bus.BusAutoConfiguration: info
-    org.springframework.cloud.bus.DefaultBusPathMatcher: info
-
 ---
 # this profile is automatically included if any of the embedded
 # config_first or discovery_first profile groups are active
@@ -119,52 +68,3 @@ spring.config.activate.on-profile: discovery_eureka
 # See https://cloud.spring.io/spring-cloud-netflix/2.0.x/multi/multi__service_discovery_eureka_clients.html#_eureka_s_health_checks
 eureka.client.healthcheck.enabled: true
 eureka.server.url: http://discovery:8761/eureka
-
----
-spring.config.activate.on-profile: debug
-logging:
-  level:
-    root: info
-    org.springframework: info
-    # geoserver roots
-    org.geoserver: info
-    org.geoserver.catalog: debug
-    org.geoserver.catalog.datadir: debug
-    org.geoserver.catalog.plugin: debug
-    org.geoserver.wms: info
-    org.geoserver.wfs: info
-    org.geoserver.jackson: debug
-    org.geotools.jackson: debug
-    org.geoserver.platform: error
-    org.geoserver.platform.resource.MemoryLockProvider: info
-    org.geoserver.platform.resource.NioFileLockProvider: debug
-    org.geoserver.platform.resource.FileLockProvider: debug
-    org.geoserver.jdbcconfig: info
-    org.geoserver.security: debug
-    org.geoserver.cloud.security: debug
-    # ACL
-    org.geoserver.acl: debug
-    org.geoserver.acl.plugin: debug
-    org.geoserver.acl.api.client: debug
-    # gs-cloud roots
-    org.geoserver.cloud: debug
-    org.geoserver.cloud.config: debug
-    org.geoserver.cloud.autoconfigure: trace
-    org.geoserver.cloud.config.factory: trace
-    org.geoserver.cloud.gwc: debug
-    # bus debugging
-    org.geoserver.cloud.bus: trace
-    org.geoserver.cloud.event: debug
-    org.springframework.cloud.bus: debug
-    org.springframework.cloud.bus.BusAutoConfiguration: info
-    org.springframework.cloud.bus.DefaultBusPathMatcher: info
-    # reactivefeign:
-    reactivefeign.client.log: info
-
----
-spring.config.activate.on-profile: acl_debug
-logging:
-  level:
-    org.geoserver.acl: debug
-    org.geoserver.acl.plugin: debug
-    org.geoserver.acl.api.client: debug
