@@ -18,7 +18,7 @@ logging:
     org.springframework.jdbc.support: info
     com.zaxxer.hikari.pool: warn
     # log flooding with "INFO Resolving eureka endpoints via configuration"
-    com.netflix.discovery.shared.resolver.aws.ConfigClusterResolver: warn
+    com.netflix.discovery.shared.resolver: warn
     # geotools roots
     org.geotools: info
     org.geotools.util.factory: warn
@@ -46,11 +46,10 @@ logging:
     org.geoserver.cloud.autoconfigure: info
     org.geoserver.cloud.config.factory: info
     # bus debugging
-    org.geoserver.cloud.bus: info
     org.geoserver.cloud.event: info
+    org.geoserver.cloud.event.bus: info
     org.springframework.cloud.bus.BusAutoConfiguration: info
     org.springframework.cloud.bus.DefaultBusPathMatcher: info
-
 ---
 spring.config.activate.on-profile: logging_debug
 logging:
@@ -70,12 +69,6 @@ logging:
     org.geoserver.cloud.autoconfigure: trace
     org.geoserver.cloud.config.factory: trace
     org.geoserver.cloud.gwc: debug
-    # bus debugging
-    org.geoserver.cloud.bus: trace
-    org.geoserver.cloud.event: debug
-    org.springframework.cloud.bus: debug
-    org.springframework.cloud.bus.BusAutoConfiguration: info
-    org.springframework.cloud.bus.DefaultBusPathMatcher: info
 
 ---
 spring.config.activate.on-profile: logging_debug_catalog
@@ -88,6 +81,7 @@ logging:
     org.geoserver.catalog.plugin: debug
     org.geoserver.cloud.autoconfigure.catalog.backend: debug
     org.geoserver.cloud.catalog.backend: debug
+    org.springframework.jdbc.core: debug
 
 ---
 spring.config.activate.on-profile: logging_debug_events
@@ -96,11 +90,10 @@ logging:
     org.geoserver.cloud.autoconfigure.catalog.event: debug
     org.geoserver.cloud.autoconfigure.event.bus: debug
     org.geoserver.cloud.event: debug
-    org.geoserver.cloud.bus: trace
-    org.springframework.cloud.bus: debug
+    org.geoserver.cloud.event.bus: debug
+    org.springframework.cloud.bus: info
     org.springframework.cloud.bus.BusAutoConfiguration: info
     org.springframework.cloud.bus.DefaultBusPathMatcher: info
-
 ---
 spring.config.activate.on-profile: logging_debug_locks
 logging:
