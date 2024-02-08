@@ -52,7 +52,9 @@ geoserver:
     instance-id: ${info.instance-id}
   security:
     enabled: true
-    authkey: true
+    # authkey pre-authentication disabled by default. Runs a scheduled task AuthKeyMapperSyncRunnable that reloads all security
+    # filters every 60 seconds. Not a big problem if required, but saves unnecessary queries to the resource store if not.
+    authkey: false
   servlet.filter.session-debug.enabled: false # until the NPE is fixed
   catalog:
     advertised: true
@@ -282,4 +284,4 @@ GEOWEBCACHE_CACHE_DIR: ${GEOSERVER_DATA_DIR:/tmp}/gwc
 
 #geoserver.catalog.caching.enabled: true
 #geoserver.catalog.advertised: false
-                                         
+
