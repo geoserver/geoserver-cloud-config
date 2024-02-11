@@ -81,7 +81,11 @@ logging:
     org.geoserver.catalog.plugin: debug
     org.geoserver.cloud.autoconfigure.catalog.backend: debug
     org.geoserver.cloud.catalog.backend: debug
-    org.springframework.jdbc.core: debug
+    org.springframework.jdbc.core: info
+    org.geoserver.cloud.gwc.backend: debug
+    # set org.geoserver.cloud.backend.pgconfig.catalog.repository: trace
+    # to print the stack trace of each SQL request, debug shows each request and the time it took
+    org.geoserver.cloud.backend.pgconfig.catalog.repository: debug
 
 ---
 spring.config.activate.on-profile: logging_debug_events
