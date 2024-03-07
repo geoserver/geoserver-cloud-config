@@ -119,3 +119,4 @@ logging:
     org.geoserver.acl: debug
     org.geoserver.acl.plugin: debug
     org.geoserver.acl.api.client: debug
+    org.geoserver.acl.plugin.accessmanager: debug
