@@ -47,6 +47,9 @@ geoserver:
       username: ${acl.username:}
       password: ${acl.password:}
       debug: ${acl.debug:false}
+      caching: ${acl.caching:true}
+      # timeout in seconds for startup to fail if API is not available
+      initTimeout: ${acl.initTimeout:10}
   metrics:
     enabled: true
     instance-id: ${info.instance-id}
@@ -180,6 +183,9 @@ acl.url: http://acl:8080/acl/api
 acl.username: geoserver
 acl.password: s3cr3t
 acl.debug: false
+acl.caching: true
+acl.startupCheck: true
+acl.initTimeout: 10
 
 ###################################################
 #### GeoServer configuration backend profiles: ####
