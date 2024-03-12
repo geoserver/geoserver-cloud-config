@@ -8,6 +8,8 @@ spring:
         - "logging_debug"
         - "logging_debug_catalog"
         - "logging_debug_locks"
+        - "logging_debug_events"
+        - "logging_debug_cache"
         - "logging_debug_acl"
 logging:
   level:
@@ -95,6 +97,7 @@ logging:
     org.geoserver.cloud.autoconfigure.event.bus: debug
     org.geoserver.cloud.event: debug
     org.geoserver.cloud.event.bus: debug
+    org.geoserver.acl.bus.bridge: debug
     org.springframework.cloud.bus: info
     org.springframework.cloud.bus.BusAutoConfiguration: info
     org.springframework.cloud.bus.DefaultBusPathMatcher: info
@@ -117,6 +120,15 @@ spring.config.activate.on-profile: logging_debug_acl
 logging:
   level:
     org.geoserver.acl: debug
+    org.geoserver.acl.bus.bridge: debug
     org.geoserver.acl.plugin: debug
     org.geoserver.acl.api.client: debug
     org.geoserver.acl.plugin.accessmanager: debug
+
+
+---
+spring.config.activate.on-profile: logging_debug_cache
+logging:
+  level:
+    org.geoserver.cloud.catalog.cache: debug 
+    org.geoserver.acl.authorization.cache: debug
