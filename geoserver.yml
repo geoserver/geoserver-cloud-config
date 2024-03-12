@@ -67,6 +67,7 @@ geoserver:
     # enable if needed on a backend-specific profile (e.g. jdbcconfig)
     caching.enabled: false
   bus:
+    enabled: true
     # whether to send distributed events (i.e. acts as master). All instances receive remote events.
     send-events: true
     # whether to send the object (CatalogInfo/config info) as payload with the event. Set to false, 
@@ -290,7 +291,4 @@ jndi:
       pgconfig.url: jdbc:postgresql://localhost:8432/pgconfig
 
 GEOWEBCACHE_CACHE_DIR: ${GEOSERVER_DATA_DIR:/tmp}/gwc
-
-#geoserver.catalog.caching.enabled: true
-#geoserver.catalog.advertised: false
 
