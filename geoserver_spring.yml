@@ -31,9 +31,9 @@ spring:
     stream:
       bindings:
         springCloudBusOutput:
-          destination: gscatalog
+          destination: geoserver
         springCloudBusInput:
-          destination: gscatalog
+          destination: geoserver
   jackson:
     default-property-inclusion: non-empty
     serialization.indent-output: false #set to true if doing manual testing and want formatted output
