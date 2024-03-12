@@ -9,7 +9,6 @@ spring.config.import:
 spring:
   # cache implementation to use if `geoserver.backend.caching.enabled: true`
   cache:
-    cache-names: gs-config, gs-catalog, gwc-tilelayerinfo
     type: caffeine
     caffeine:
       #CaffeineSpec supports parsing configuration off of a string
@@ -21,8 +20,6 @@ spring:
       #expireAfterAccess=[duration]
       #expireAfterWrite=[duration]
       #refreshAfterWrite=[duration]
-      #weakKeys: sets Caffeine.weakKeys.
-      #weakValues: sets Caffeine.weakValues.
       #softValues: sets Caffeine.softValues.
       #recordStats: sets Caffeine.recordStats.
       spec: softValues,initialCapacity=10000,recordStats
