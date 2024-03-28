@@ -59,18 +59,12 @@ spring:
         verbose:
           enabled: true
       routes:
-        - id: aclroot
-          uri: ${targets.acl}
-          predicates:
-          - Path=/acl
-          filters:
-          #- StripBasePath=/acl #remove the base path on downstream requests
-          #- RewritePath=/acl/(?<segment>.*),/$\{segment}
-          - RewritePath=/acl,/acl/
         - id: acl
           uri: ${targets.acl}
           predicates:
-          - Path=/acl/**
+          - Path=${geoserver.base-path}/acl,${geoserver.base-path}/acl/**
+          filters:
+          - RewritePath=/acl,/acl/
         # WFS routes
         - id: wfs # proxies requests to gateway-service:/wfs to wfs-service:/wfs
           uri: ${targets.wfs}
