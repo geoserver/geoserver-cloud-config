@@ -15,7 +15,7 @@
 geoserver.base-path: ${geoserver_base_path:}
 
 # by default, assumes a discovery-client is in use, and perform client-side load balancing on
-# the advertised instances. See the 'static_routes' profile notes for a static config 
+# the advertised instances. See the 'standalone' profile notes for a static config 
 targets:
   acl: http://acl:8080
   wfs: lb://wfs-service
@@ -170,6 +170,7 @@ spring.config.activate.on-profile: standalone
 # Define static targets using known host names.
 # Host names can be docker-compose assigned service names, or k8s service names as appropriate
 targets:
+  acl: http://acl:8080
   wfs: http://wfs:8080
   wms: http://wms:8080
   wcs: http://wcs:8080
