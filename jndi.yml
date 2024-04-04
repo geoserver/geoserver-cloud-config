@@ -23,7 +23,7 @@
 jndi:
   datasources:
     postgis:
-      enabled: false
+      enabled: ${jndi.postgis.enabled:false}
       wait-for-it: true
       wait-timeout: 10
       url: jdbc:postgresql://postgis:5432/postgis
@@ -34,7 +34,7 @@ jndi:
       connection-timeout: 500
       idle-timeout: 60000
     pgconfig:
-      enabled: false
+      enabled: ${jndi.pgconfig.enabled:false}
       schema: pgconfig
       wait-for-it: true
       wait-timeout: 10
