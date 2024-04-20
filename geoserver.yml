@@ -289,6 +289,10 @@ geoserver:
       resource-browser: true
       catalog-bulk-load: true
 ---
+spring.config.activate.on-profile: geonode
+# Access Control List client config. Replaces GeoFence
+acl.enabled: true
+---
 #############################################
 spring.config.activate.on-profile: local
 ## `local` profile, used for development only.
