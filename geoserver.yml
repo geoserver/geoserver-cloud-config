@@ -282,6 +282,7 @@ jdbcconfig.password: geo5erver
 
 jndi:
    datasources:
+      postgis.enabled: true
       postgis.url: jdbc:postgresql://localhost:6432/postgis
       pgconfig.url: jdbc:postgresql://localhost:8432/pgconfig
 
