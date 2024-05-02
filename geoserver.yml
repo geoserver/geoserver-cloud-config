@@ -106,9 +106,9 @@ geoserver:
         driverClassname: ${pgconfig.driverClassname:org.postgresql.Driver}
         # optional:
         minimumIdle: ${pgconfig.minConnections:0}
-        maximumPoolSize: ${pgconfig.maxConnections:8}
-        connectionTimeout: ${pgconfig.connectionTimeout:250}
-        idleTimeout: ${pgconfig.idleTimeout:10000}
+        maximumPoolSize: ${pgconfig.maxConnections:10}
+        connectionTimeout: ${pgconfig.connectionTimeout:2500}
+        idleTimeout: ${pgconfig.idleTimeout:30000}
   styling:
     css.enabled: true
     mapbox.enabled: true
@@ -201,11 +201,25 @@ geoserver:
 
 ---
 spring.config.activate.on-profile: pgconfig
+# enable the pgconfig catalog backend
 backend.pgconfig: true
-jndi.datasources.pgconfig.enabled: true
-pgconfig.jndi-name: java:comp/env/jdbc/pgconfig
+# configure the jndi jdbc datasource with the placeholders defined in jndi.yml
+jndi.pgconfig.enabled: true
+pgconfig.host: pgconfigdb
+pgconfig.port: 5432
+pgconfig.database: pgconfig
 pgconfig.schema: pgconfig
+pgconfig.username: pgconfig
+pgconfig.password: pgconfig
+pgconfig.maxConnections: 10
+pgconfig.minConnections: 0
+pgconfig.connectionTimeout: 2500
+pgconfig.idleTimeout: 30000
 pgconfig.initialize: true
+
+# tell the pgconfig catalog backend which JNDI datasource to use
+# e.g., jndi.datasources.pgconfig in jndi.yml defines java:comp/env/jdbc/pgconfig
+pgconfig.jndi-name: java:comp/env/jdbc/pgconfig
 
 # enable caching if using the pgconfig as backend
 geoserver.catalog.caching.enabled: true
@@ -280,11 +294,13 @@ jdbcconfig.url: jdbc:postgresql://localhost:54321/geoserver_config
 jdbcconfig.username: geoserver
 jdbcconfig.password: geo5erver
 
+pgconfig.host: localhost
+pgconfig.port: 8432
+
 jndi:
    datasources:
       postgis.enabled: true
       postgis.url: jdbc:postgresql://localhost:6432/postgis
-      pgconfig.url: jdbc:postgresql://localhost:8432/pgconfig
 
 GEOWEBCACHE_CACHE_DIR: ${GEOSERVER_DATA_DIR:/tmp}/gwc
 

@@ -35,14 +35,14 @@ jndi:
       idle-timeout: 60000
     pgconfig:
       enabled: ${jndi.pgconfig.enabled:false}
-      schema: pgconfig
+      schema: ${pgconfig.schema:pgconfig}
       wait-for-it: true
       wait-timeout: 10
-      url: jdbc:postgresql://pgconfigdb:5432/pgconfig
-      username: pgconfig
-      password: pgconfig
-      maximum-pool-size: 10
-      minimum-idle: 0
-      connection-timeout: 2500
-      idle-timeout: 60000
+      url: jdbc:postgresql://${pgconfig.host:pgconfigdb}:${pgconfig.port:5432}/${pgconfig.database:pgconfig}
+      username: ${pgconfig.username:pgconfig}
+      password: ${pgconfig.password:pgconfig}
+      maximum-pool-size: ${pgconfig.maxConnections:10}
+      minimum-idle: ${pgconfig.minConnections:0}
+      connection-timeout: ${pgconfig.connectionTimeout:2500}
+      idle-timeout: ${pgconfig.idleTimeout:30000}
       
