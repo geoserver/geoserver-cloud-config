@@ -22,7 +22,7 @@ spring:
       #refreshAfterWrite=[duration]
       #softValues: sets Caffeine.softValues.
       #recordStats: sets Caffeine.recordStats.
-      spec: softValues,initialCapacity=10000,recordStats
+      spec: softValues,initialCapacity=10000,maximumSize=10000,recordStats
 
 # The following geoserver, geotools, and geowebcache configuration properties
 # are common to all geoserver microservices, despite some may not apply to a given service,
