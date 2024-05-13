@@ -110,7 +110,7 @@ logging:
     org.geoserver.platform.resource.FileLockProvider: trace
     org.geoserver.platform.resource.NioFileLockProvider: trace
     org.geoserver.platform.resource.NioFileLock: trace
-    org.geoserver.cloud.backend.pgsql.resource.PgsqlLockProvider: trace
+    org.geoserver.cloud.backend.pgconfig.resource.PgconfigLockProvider: trace
     org.geoserver.jdbcstore.locks: trace
     org.geoserver.cloud.config.catalog.backend.datadirectory: trace
     org.geoserver.catalog.plugin.locking: trace
