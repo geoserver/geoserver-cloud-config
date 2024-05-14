@@ -228,19 +228,26 @@ geoserver.catalog.caching.enabled: true
 #### per microservice-specific profiles: ####
 ---
 spring.config.activate.on-profile: wfs_service
+geoserver.security.layergroup-containmentcache: false
 ---
 spring.config.activate.on-profile: wms_service
+geoserver.security.layergroup-containmentcache: true
 ---
 spring.config.activate.on-profile: wcs_service
+geoserver.security.layergroup-containmentcache: false
 ---
 spring.config.activate.on-profile: wps_service
+geoserver.security.layergroup-containmentcache: false
 ---
 spring.config.activate.on-profile: restconfig_service
+geoserver.security.layergroup-containmentcache: false
 ---
 spring.config.activate.on-profile: gwc_service
+geoserver.security.layergroup-containmentcache: true
 ---
 spring.config.activate.on-profile: webui_service
 geoserver:
+  security.layergroup-containmentcache: true
   web-ui:
     acl.enabled: ${geoserver.acl.enabled}
     file-browser.hide-file-system: ${webui.hide-filesystem:false}
