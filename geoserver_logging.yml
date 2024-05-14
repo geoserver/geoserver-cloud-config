@@ -87,8 +87,8 @@ logging:
     org.geoserver.cloud.gwc.backend: debug
     # set org.geoserver.cloud.backend.pgconfig.catalog.repository: trace
     # to print the stack trace of each SQL request, debug shows each request and the time it took
-    org.geoserver.cloud.backend.pgconfig.catalog.repository: debug
-
+    org.geoserver.cloud.backend.pgconfig.catalog.repository: trace
+    org.geoserver.cloud.backend.pgconfig.catalog.repository.rowmapper: debug
 ---
 spring.config.activate.on-profile: logging_debug_events
 logging:
@@ -132,3 +132,4 @@ logging:
   level:
     org.geoserver.cloud.catalog.cache: debug 
     org.geoserver.acl.authorization.cache: debug
+    org.geoserver.cloud.backend.pgconfig.catalog.repository.rowmapper: debug
