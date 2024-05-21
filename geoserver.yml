@@ -53,6 +53,10 @@ geoserver:
   security:
     enabled: true
     authkey: true
+    gateway-shared-auth:
+       enabled: true
+       auto: true
+       server: false
   servlet.filter.session-debug.enabled: false # until the NPE is fixed
   catalog:
     advertised: true
@@ -247,7 +251,9 @@ geoserver.security.layergroup-containmentcache: true
 ---
 spring.config.activate.on-profile: webui_service
 geoserver:
-  security.layergroup-containmentcache: true
+  security:
+    layergroup-containmentcache: true
+    gateway-shared-auth.server: true
   web-ui:
     acl.enabled: ${geoserver.acl.enabled}
     file-browser.hide-file-system: ${webui.hide-filesystem:false}
