@@ -5,13 +5,10 @@
 # under that path prefix (e.g. http://localhost:9090/geoserver-cloud/web, http://localhost:9090/geoserver-cloud/wfs, etc)
 # Examples:
 #geoserver.base-path:
+#geoserver.base-path: /geoserver
 #geoserver.base-path: /geoserver-cloud
 #geoserver.base-path: /geoserver/cloud
 # Leave it empty for no additional path, setting it to / won't work currently
-#
-# Please note any other prefix than the empty string will require a trailing slash in the root URL
-# for the redirection to the web-ui to work. This is something we need to fix. For example:
-# http://localhost:9090/geoserver-cloud will return 404, but http://localhost:9090/geoserver-cloud/ will work.
 geoserver.base-path: ${geoserver_base_path:}
 
 # by default, assumes a discovery-client is in use, and perform client-side load balancing on
@@ -59,6 +56,12 @@ spring:
         verbose:
           enabled: true
       routes:
+        - id: root-redirect-to-webui
+          uri: no://op
+          predicates:
+          - Path=/,${geoserver.base-path}
+          filters:
+          - RedirectTo=302, ${geoserver.base-path}/web/
         - id: acl
           uri: ${targets.acl}
           predicates:
