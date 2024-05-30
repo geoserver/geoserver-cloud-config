@@ -26,6 +26,9 @@ targets:
 
 # Configure routes to services. See https://cloud.spring.io/spring-cloud-gateway/single/spring-cloud-gateway.html
 server:
+  port: 8080
+  # Let spring-boot's ForwardedHeaderFilter take care of reflecting the client-originated protocol and address in the HttpServletRequest  
+  forward-headers-strategy: framework
   compression:
     enabled: true
 
