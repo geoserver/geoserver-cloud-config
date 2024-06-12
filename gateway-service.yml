@@ -35,26 +35,40 @@ server:
 spring:
   cloud:
     gateway:
+      enabled: true
+      # Disable the Forwarded header, rely on X-Forwarded-*. Forwarded is built wrong.
+      # e.g.:      proto=https;host=\"gateway:8080\";for=\"172.20.0.1:51084\
+      # instead of proto=https;host=\"original-host:443\";for=\"172.20.0.1:51084\
+      forwarded.enabled: false
       x-forwarded:
         for-enabled: true
+        for-append: true
         host-enabled: true
         port-enabled: true
         proto-enabled: true
         prefix-enabled: true
+      metrics.enabled: true
+      default-filters:
+        - SecureHeaders
+        #remove the base path on downstream requests
+        - StripBasePath=${geoserver.base-path}
+      global-filter:
+        websocket-routing:
+          enabled: true
+      filter:
+        secure-headers:
+          enabled: true
+          disable:
+          - content-security-policy
+          frame-options: SAMEORIGIN
+          xss-protection-header: 0
+          referrer-policy: no-referrer
       globalcors:
         cors-configurations:
           "[/**]":
             allowedOrigins: "*"
             allowedHeaders: "*"
-            allowedMethods:
-              - GET
-              - PUT
-              - POST
-              - DELETE
-              - OPTIONS
-              - HEAD
-      default-filters:
-        - StripBasePath=${geoserver.base-path} #remove the base path on downstream requests
+            allowedMethods: GET, PUT, POST, DELETE, OPTIONS, HEAD
       actuator:
         verbose:
           enabled: true
