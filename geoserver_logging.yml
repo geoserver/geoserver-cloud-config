@@ -112,6 +112,7 @@ logging:
     org.geoserver.cloud.autoconfigure.event.bus: debug
     org.geoserver.cloud.event: debug
     org.geoserver.cloud.event.bus: debug
+    org.geoserver.cloud.catalog.backend.datadir: debug
     org.geoserver.acl.bus.bridge: debug
     org.springframework.cloud.bus: info
     org.springframework.cloud.bus.BusAutoConfiguration: info
