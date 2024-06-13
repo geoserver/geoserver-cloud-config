@@ -15,6 +15,7 @@ logging:
   level:
     root: warn
     org.springframework: warn
+    org.springframework.retry.support.RetryTemplate: warn
     org.springframework.retry: warn
     org.springframework.cloud.bus: info
     org.springframework.jdbc.support: info
