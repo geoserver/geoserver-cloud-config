@@ -49,7 +49,8 @@ spring:
         prefix-enabled: true
       metrics.enabled: true
       default-filters:
-        - SecureHeaders
+        # see https://docs.spring.io/spring-cloud-gateway/reference/spring-cloud-gateway/gatewayfilter-factories/deduperesponseheader-factory.html
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
         #remove the base path on downstream requests
         - StripBasePath=${geoserver.base-path}
       global-filter:
@@ -64,6 +65,7 @@ spring:
           xss-protection-header: 0
           referrer-policy: no-referrer
       globalcors:
+        #add-to-simple-url-handler-mapping: true
         cors-configurations:
           "[/**]":
             allowedOrigins: "*"
