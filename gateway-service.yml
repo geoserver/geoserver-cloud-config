@@ -148,11 +148,6 @@ spring:
           predicates:
             - Path=${geoserver.base-path}/**
           #- Path=${geoserver.base-path},${geoserver.base-path}/,${geoserver.base-path}/index.html,${geoserver.base-path}/web,${geoserver.base-path}/web/**,${geoserver.base-path}/j_spring_security_check,${geoserver.base-path}/j_spring_security_logout
-        # WebUi - demo
-        - id: webui_demo
-          uri: ${targets.webui-demo}
-          predicates:
-           - Path=${geoserver.base-path}/TestWfsPost
 management:
   endpoints:
     enabled-by-default: true
