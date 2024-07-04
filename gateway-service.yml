@@ -172,6 +172,7 @@ management:
 logging:
   level:
     root: info
+    com.netflix.discovery.DiscoveryClient: warn
     # log flooding with "INFO Resolving eureka endpoints via configuration"
     com.netflix.discovery.shared.resolver: warn
 ---
