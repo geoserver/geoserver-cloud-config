@@ -9,7 +9,11 @@
 #geoserver.base-path: /geoserver-cloud
 #geoserver.base-path: /geoserver/cloud
 # Leave it empty for no additional path, setting it to / won't work currently
-geoserver.base-path: ${geoserver_base_path:}
+geoserver:
+  base-path: ${geoserver_base_path:}
+  security:
+    gateway-shared-auth:
+       enabled: ${gateway.shared-auth:true}
 
 # by default, assumes a discovery-client is in use, and perform client-side load balancing on
 # the advertised instances. See the 'standalone' profile notes for a static config 
@@ -42,7 +46,6 @@ spring:
       forwarded.enabled: false
       x-forwarded:
         for-enabled: true
-        for-append: true
         host-enabled: true
         port-enabled: true
         proto-enabled: true

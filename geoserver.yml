@@ -54,7 +54,7 @@ geoserver:
     enabled: true
     authkey: true
     gateway-shared-auth:
-       enabled: true
+       enabled: ${gateway.shared-auth:true}
        auto: true
        server: false
   servlet.filter.session-debug.enabled: false # until the NPE is fixed
