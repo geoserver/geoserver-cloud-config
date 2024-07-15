@@ -54,8 +54,12 @@ geoserver:
     enabled: true
     authkey: true
     gateway-shared-auth:
+       # enable sharing the webui authentication through the gateway with the other microservices
+       # make sure the same config is applied in gateway-service.yml
        enabled: ${gateway.shared-auth:true}
+       # if enabled, automatically set up the authentication filter chain
        auto: true
+       # only to be set to true in the webui service (e.g. as in spring.config.activate.on-profile: webui_service) 
        server: false
   servlet.filter.session-debug.enabled: false # until the NPE is fixed
   catalog:
@@ -258,6 +262,7 @@ spring.config.activate.on-profile: webui_service
 geoserver:
   security:
     layergroup-containmentcache: true
+    # set shared auth to server mode. It shall be false in all other services.
     gateway-shared-auth.server: true
   web-ui:
     acl.enabled: ${geoserver.acl.enabled}

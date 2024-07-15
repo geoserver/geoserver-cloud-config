@@ -13,6 +13,8 @@ geoserver:
   base-path: ${geoserver_base_path:}
   security:
     gateway-shared-auth:
+       # enable sharing the webui authentication through the gateway with the other microservices
+       # make sure the same config is applied in geoserver.yml
        enabled: ${gateway.shared-auth:true}
 
 # by default, assumes a discovery-client is in use, and perform client-side load balancing on
