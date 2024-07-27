@@ -180,6 +180,7 @@ logging:
     com.netflix.discovery.DiscoveryClient: warn
     # log flooding with "INFO Resolving eureka endpoints via configuration"
     com.netflix.discovery.shared.resolver: warn
+    org.geoserver.cloud.security.gateway.sharedauth: info
 ---
 # this profile is automatically included if any of the embedded
 # config_first or discovery_first profile groups are active

@@ -11,6 +11,7 @@ spring:
         - "logging_debug_events"
         - "logging_debug_cache"
         - "logging_debug_acl"
+        - "logging_debug_security"
 logging:
   level:
     root: warn
@@ -42,6 +43,7 @@ logging:
     org.geoserver.jdbcconfig: info
     org.geoserver.security: info
     org.geoserver.cloud.security: info
+    org.geoserver.cloud.security.gateway.sharedauth: info
     # gs-acl roots
     org.geoserver.acl: info
     # gs-cloud roots
@@ -64,8 +66,6 @@ logging:
     org.geoserver.catalog: debug
     org.geoserver.jackson: debug
     org.geotools.jackson: debug
-    org.geoserver.security: debug
-    org.geoserver.cloud.security: debug
     # gs-cloud roots
     org.geoserver.cloud: debug
     org.geoserver.cloud.config: debug
@@ -73,6 +73,13 @@ logging:
     org.geoserver.cloud.config.factory: trace
     org.geoserver.cloud.gwc: debug
 
+---
+spring.config.activate.on-profile: logging_debug_security
+logging:
+  level:
+    org.geoserver.security: debug
+    org.geoserver.cloud.security: debug
+    org.geoserver.cloud.security.gateway.sharedauth: debug
 ---
 spring.config.activate.on-profile: logging_debug_catalog
 logging:
@@ -140,7 +147,6 @@ logging:
     org.geoserver.acl.plugin: debug
     org.geoserver.acl.api.client: debug
     org.geoserver.acl.plugin.accessmanager: debug
-
 
 ---
 spring.config.activate.on-profile: logging_debug_cache
