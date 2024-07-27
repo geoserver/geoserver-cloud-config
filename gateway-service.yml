@@ -210,6 +210,8 @@ logging:
 
 ---
 spring.config.activate.on-profile: local
+server.port: 9090
+management.server.port: 9090
 targets:
   acl: http://localhost:9000
   wfs: http://localhost:9101
