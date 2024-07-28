@@ -215,7 +215,12 @@ spring.config.activate.on-profile: debug
 logging:
    level:
       root: debug
-
+---
+spring.config.activate.on-profile: logging_debug_security
+logging:
+  level:
+    org.geoserver.cloud.security.gateway.sharedauth.pre: debug
+    org.geoserver.cloud.security.gateway.sharedauth.post: debug
 ---
 spring.config.activate.on-profile: local
 server.port: 9090
