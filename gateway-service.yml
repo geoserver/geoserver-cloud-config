@@ -17,6 +17,7 @@ geoserver:
        # make sure the same config is applied in geoserver.yml
        enabled: ${gateway.shared-auth:true}
 
+basepath: ${geoserver.base-path}
 # by default, assumes a discovery-client is in use, and perform client-side load balancing on
 # the advertised instances. See the 'standalone' profile notes for a static config 
 targets:
@@ -57,7 +58,7 @@ spring:
         # see https://docs.spring.io/spring-cloud-gateway/reference/spring-cloud-gateway/gatewayfilter-factories/deduperesponseheader-factory.html
         - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
         #remove the base path on downstream requests
-        - StripBasePath=${geoserver.base-path}
+        - StripBasePath=${basepath}
       global-filter:
         websocket-routing:
           enabled: true
@@ -83,83 +84,83 @@ spring:
         - id: root-redirect-to-webui
           uri: no://op
           predicates:
-          - Path=/,${geoserver.base-path}
+          - Path=/,${basepath}
           filters:
-          - RedirectTo=302, ${geoserver.base-path}/web/
+          - RedirectTo=302, ${basepath}/web/
         - id: acl-root-redirect-to-swagger
           # redirect /acl and /acl/ to swagger, otherwise /acl/ works but /acl doesn't
           uri: no://op
           predicates:
-          - Path=${geoserver.base-path}/acl
+          - Path=${basepath}/acl
           filters:
-          - RedirectTo=302, ${geoserver.base-path}/acl/openapi/swagger-ui/index.html
+          - RedirectTo=302, ${basepath}/acl/openapi/swagger-ui/index.html
         - id: acl
           uri: ${targets.acl}
           predicates:
-          - Path=${geoserver.base-path}/acl/**
+          - Path=${basepath}/acl/**
           filters:
           - RewritePath=/acl,/acl/
         # WFS routes
         - id: wfs # proxies requests to gateway-service:/wfs to wfs-service:/wfs
           uri: ${targets.wfs}
           predicates:
-            - Path=${geoserver.base-path}/wfs,${geoserver.base-path}/{workspace}/wfs,${geoserver.base-path}/{workspace}/{layer}/wfs,${geoserver.base-path}/schemas/wfs/**
+            - Path=${basepath}/wfs,${basepath}/{workspace}/wfs,${basepath}/{workspace}/{layer}/wfs,${basepath}/schemas/wfs/**,${basepath}/webresources/wfs/**
         # proxy [/{workspace}]/ows?SERVICE=wfs to wfs-service:[/{workspace}]/ows?SERVICE=wfs. Param value is case insensitive, name is not.
         - id: wfs_ows
           uri: ${targets.wfs}
           predicates:
-            - Path=${geoserver.base-path}/ows,${geoserver.base-path}/{workspace}/ows,${geoserver.base-path}/{workspace}/{layer}/ows
+            - Path=${basepath}/ows,${basepath}/{workspace}/ows,${basepath}/{workspace}/{layer}/ows
             - RegExpQuery=(?i:service),(?i:wfs) # match service=wfs case insensitively
         # WMS routes
         - id: wms # proxies requests to gateway-service:/wms to wms-service:/wms
           uri: ${targets.wms}
           predicates:
-            - Path=${geoserver.base-path}/wms,${geoserver.base-path}/{workspace}/wms,${geoserver.base-path}/{workspace}/{layer}/wms,${geoserver.base-path}/schemas/wms/**,${geoserver.base-path}/openlayers/**,${geoserver.base-path}/openlayers3/**
+            - Path=${basepath}/wms,${basepath}/{workspace}/wms,${basepath}/{workspace}/{layer}/wms,${basepath}/schemas/wms/**,${basepath}/openlayers/**,${basepath}/openlayers3/**,${basepath}/webresources/wms/**,${basepath}/options.png
         - id: wms_ows # proxy [/{workspace}]/ows?SERVICE=wms to wms-service:[/{workspace}]/ows?SERVICE=wms. Param value is case insensitive, name is not.
           uri: ${targets.wms}
           predicates:
-            - Path=${geoserver.base-path}/ows,${geoserver.base-path}/{workspace}/ows,${geoserver.base-path}/{workspace}/{layer}/ows
+            - Path=${basepath}/ows,${basepath}/{workspace}/ows,${basepath}/{workspace}/{layer}/ows
             - RegExpQuery=(?i:service),(?i:wms) # match service=wms case insensitively
         - id: kml # proxies requests to kml endpoints to the wms service
           uri: ${targets.wms}
           predicates:
-            - Path=${geoserver.base-path}/wms/kml,${geoserver.base-path}/{workspace}/wms/kml,${geoserver.base-path}/kml/icon/**
+            - Path=${basepath}/wms/kml,${basepath}/{workspace}/wms/kml,${basepath}/kml/icon/**
         # WCS routes
         - id: wcs # proxies requests to gateway-service:/wcs to wcs-service:/wcs
           uri: ${targets.wcs}
           predicates:
-            - Path=${geoserver.base-path}/wcs,${geoserver.base-path}/{workspace}/wcs,${geoserver.base-path}/{workspace}/{layer}/wcs,${geoserver.base-path}/schemas/wcs/**
+            - Path=${basepath}/wcs,${basepath}/{workspace}/wcs,${basepath}/{workspace}/{layer}/wcs,${basepath}/schemas/wcs/**
         - id: wcs_ows # proxy [/{workspace}]/ows?SERVICE=wcs to wcs-service:[/{workspace}]/ows?SERVICE=wcs. Param value is case insensitive, name is not.
           uri: ${targets.wcs}
           predicates:
-            - Path=${geoserver.base-path}/ows,${geoserver.base-path}/{workspace}/ows,${geoserver.base-path}/{workspace}/{layer}/ows
+            - Path=${basepath}/ows,${basepath}/{workspace}/ows,${basepath}/{workspace}/{layer}/ows
             - RegExpQuery=(?i:service),(?i:wcs) # match service=wcs case insensitively
         # WPS routes
         - id: wps # proxies requests to gateway-service:/wps to wfs-service:/wps
           uri: ${targets.wps}
           predicates:
-            - Path=${geoserver.base-path}/wps,${geoserver.base-path}/{segment}/wps,${geoserver.base-path}/schemas/wps/**
+            - Path=${basepath}/wps,${basepath}/{segment}/wps,${basepath}/schemas/wps/**
         - id: wps_ows # proxy [/{workspace}]/ows?SERVICE=wps to wps-service:[/{workspace}]/ows?SERVICE=wps. Param value is case insensitive, name is not.
           uri: ${targets.wps}
           predicates:
-            - Path=${geoserver.base-path}/ows,${geoserver.base-path}/{segment}/ows
+            - Path=${basepath}/ows,${basepath}/{segment}/ows
             - RegExpQuery=(?i:service),(?i:wps) # match service=wps case insensitively
         # REST configuration routes
         - id: restconfig
           uri: ${targets.rest}
           predicates:
-            - Path=${geoserver.base-path}/rest/**
+            - Path=${basepath}/rest/**
         # GeoWebcache configuration routes
         - id: gwc
           uri: ${targets.gwc}
           predicates:
-            - Path=${geoserver.base-path}/gwc/**,${geoserver.base-path}/{workspace}/gwc/**,${geoserver.base-path}/{workspace}/{layer}/gwc/**
+            - Path=${basepath}/gwc/**,${basepath}/{workspace}/gwc/**,${basepath}/{workspace}/{layer}/gwc/**
         # Web UI configuration routes
         - id: webui
           uri: ${targets.webui}
           predicates:
-            - Path=${geoserver.base-path}/**
-          #- Path=${geoserver.base-path},${geoserver.base-path}/,${geoserver.base-path}/index.html,${geoserver.base-path}/web,${geoserver.base-path}/web/**,${geoserver.base-path}/j_spring_security_check,${geoserver.base-path}/j_spring_security_logout
+            - Path=${basepath}/**
+          #- Path=${basepath},${basepath}/,${basepath}/index.html,${basepath}/web,${basepath}/web/**,${basepath}/j_spring_security_check,${basepath}/j_spring_security_logout
 management:
   endpoints:
     enabled-by-default: true
