@@ -13,6 +13,38 @@ spring:
         - "logging_debug_acl"
         - "logging_debug_security"
 logging:
+  # GeoServer Cloud specificconfiguration to inject auth, application, http request, and geoserver ows request
+  # attributes to the logging MDC. The following are default values. The MDC attributes will be automatically
+  # including when using the json-logs profile. For the regular console output you could tweak the logback-spring.xml
+  # config file to include the required MDC properties
+  mdc:
+    include:
+      user:
+        id: false
+        roles: false
+      application:
+        name: true
+        version: true
+        instance-id: true
+        active-profiles: true
+      http:
+        id: true
+        method: true
+        url: true
+        query-string: false
+        parameters: false
+        headers: false
+        headers-pattern: ".*"
+        cookies: false
+        remote-addr: false
+        remote-host: false
+        session-id: false
+      geoserver:
+        ows:
+          service-name: true
+          service-version: true
+          service-format: true
+          operation-name: true
   level:
     root: warn
     org.springframework: warn
