@@ -1,6 +1,5 @@
 # Logging profiles for GeoServer applications
 
-# default profile:
 spring:
   profiles:
     group:
@@ -12,21 +11,41 @@ spring:
         - "logging_debug_cache"
         - "logging_debug_acl"
         - "logging_debug_security"
+
+# default profile:
 logging:
-  # GeoServer Cloud specificconfiguration to inject auth, application, http request, and geoserver ows request
+  # Control behavior of the org.geoserver.cloud.accesslog logging topic. When enabled, the request logs will include the URI's that match
+  # the following regular expressions at the spefified level. The defafult level is info (see logging.level.org.geoserver.cloud.accesslog below)
+  # Additionally, if the json-logs spring profile is enabled, the log entries will include MDC attributes configured in the logging.mdc.include.* properties bellow
+  accesslog:
+    enabled: true
+    # A list of java regular expressions applied to the request URL for logging at info level
+    # The default behavior is to log all requests to the REST API
+    info:
+    - .*\/(rest|gwc\/rest)(\/.*|\?.*)?$
+    # A list of java regular expressions applied to the request URL for logging at debug level
+    # The default behavior is to log OWS requests
+    debug:
+    - .*\/(ows|ogc|wms|wfs|wcs|wps)(\/.*|\?.*)?$
+    # A list of java regular expressions applied to the request URL for logging at trace level
+    # The default behavior is to EXCLUDE only webui's static resources and known image extensions
+    trace:
+    - ^(?!.*\/web\/wicket\/resource\/)(?!.*\.(png|jpg|jpeg|gif|svg|webp|ico)(\\?.*)?$).*$
+
+  # GeoServer Cloud specific configuration to inject auth, application, http request, and geoserver ows request
   # attributes to the logging MDC. The following are default values. The MDC attributes will be automatically
-  # including when using the json-logs profile. For the regular console output you could tweak the logback-spring.xml
+  # included when using the json-logs profile. For the regular console output you could tweak the logback-spring.xml
   # config file to include the required MDC properties
   mdc:
     include:
       user:
-        id: false
+        id: true
         roles: false
       application:
         name: true
         version: true
         instance-id: true
-        active-profiles: true
+        active-profiles: false
       http:
         id: true
         method: true
@@ -85,11 +104,13 @@ logging:
     org.geoserver.cloud: info
     org.geoserver.cloud.autoconfigure: info
     org.geoserver.cloud.config.factory: info
+    org.geoserver.cloud.accesslog: info
     # bus debugging
     org.geoserver.cloud.event: info
     org.geoserver.cloud.event.bus: info
     org.springframework.cloud.bus.BusAutoConfiguration: info
     org.springframework.cloud.bus.DefaultBusPathMatcher: info
+    com.netflix.discovery.DiscoveryClient: warn
 ---
 spring.config.activate.on-profile: logging_debug
 logging:

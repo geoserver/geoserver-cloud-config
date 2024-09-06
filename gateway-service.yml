@@ -1,3 +1,6 @@
+spring.config.import:
+ - optional:geoserver_logging.yml
+
 # Defines the root base path at which the gateway exposes all geoserver request paths
 # We're not setting the spring.webflux.base-path because spring-cloud Gateway doesn't
 # work properly with it. See https://github.com/spring-cloud/spring-cloud-gateway/issues/1759
@@ -181,14 +184,6 @@ management:
     enable.jvm: true
     export:
       atlas.enabled: false
-
-logging:
-  level:
-    root: info
-    com.netflix.discovery.DiscoveryClient: warn
-    # log flooding with "INFO Resolving eureka endpoints via configuration"
-    com.netflix.discovery.shared.resolver: warn
-    org.geoserver.cloud.security.gateway.sharedauth: info
 ---
 # this profile is automatically included if any of the embedded
 # config_first or discovery_first profile groups are active
