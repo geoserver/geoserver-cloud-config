@@ -76,6 +76,8 @@ logging:
     org.geoserver.security: info
     org.geoserver.cloud.security: info
     org.geoserver.cloud.security.gateway.sharedauth: info
+    # gwc roots
+    org.geoserver.gwc: info
     # gs-acl roots
     org.geoserver.acl: info
     # gs-cloud roots
