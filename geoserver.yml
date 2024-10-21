@@ -149,8 +149,8 @@ geotools:
         port: ${http.proxyPort:}
         user: ${http.proxyUser:}
         password: ${http.proxyPassword:}
-        nonProxyHosts: ${http.nonProxyHosts:localhost.*}
         # comma separated list of Java regular expressions, e.g.: nonProxyHosts: localhost, example.*
+        nonProxyHosts: ${http.nonProxyHosts:}
       https:
         host: ${https.proxyHost:${geotools.httpclient.proxy.http.host}}
         port: ${https.proxyPort:${geotools.httpclient.proxy.http.port}}
