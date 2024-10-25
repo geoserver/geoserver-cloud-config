@@ -53,6 +53,8 @@ geoserver:
   security:
     enabled: true
     authkey: true
+    jdbc: true
+    ldap: true
     gateway-shared-auth:
        # enable sharing the webui authentication through the gateway with the other microservices
        # make sure the same config is applied in gateway-service.yml
