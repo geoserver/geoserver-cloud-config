@@ -97,7 +97,7 @@ geoserver:
       enabled: ${backend.jdbcconfig:false}
       initdb: true
       web.enabled: true
-      cache-directory: ${jdbcconfig.cachedir:${java.io.tmpdir}/cngs/jdbcconfig/cache}
+      cache-directory: ${jdbcconfig.cachedir:${java.io.tmpdir}/gscloud/jdbcconfig/cache}
       datasource:
         url: "${jdbcconfig.url:jdbc:postgresql://${jdbcconfig.host:database}:${jdbcconfig.port:5432}/${jdbcconfig.database:geoserver_config}?currentSchema=${jdbcconfig.schema:public}}"
         username: ${jdbcconfig.username:geoserver}
