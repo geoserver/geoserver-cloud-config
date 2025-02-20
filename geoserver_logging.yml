@@ -15,8 +15,8 @@ spring:
 # default profile:
 logging:
   # Control behavior of the org.geoserver.cloud.accesslog logging topic. When enabled, the request logs will include the URI's that match
-  # the following regular expressions at the spefified level. The defafult level is info (see logging.level.org.geoserver.cloud.accesslog below)
-  # Additionally, if the json-logs spring profile is enabled, the log entries will include MDC attributes configured in the logging.mdc.include.* properties bellow
+  # the following regular expressions at the specified level. The defafult level is info (see logging.level.org.geoserver.cloud.accesslog below)
+  # Additionally, if the json-logs spring profile is enabled, the log entries will include MDC attributes configured in the logging.mdc.include.* properties below
   accesslog:
     enabled: true
     # A list of java regular expressions applied to the request URL for logging at info level
