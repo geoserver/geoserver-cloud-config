@@ -160,6 +160,38 @@ geotools:
         user: ${https.proxyUser:${geotools.httpclient.proxy.http.user}}
         password: ${https.proxyPassword:${geotools.httpclient.proxy.http.password}}
         nonProxyHosts: ${https.nonProxyHosts:${geotools.httpclient.proxy.http.nonProxyHosts}}
+  data:
+    filtering:
+      # Filtering system enabled by default
+      enabled: true
+      # Factory configuration using display names
+      vector-formats:
+        # Common factories - all enabled by default (alphabetically sorted)
+        "[Application Schema DataAccess]": ${geoserver.extension.appschema.enabled:false}
+        "[Directory of spatial files (shapefiles)]": true
+        "[Generalizing data store]": true
+        "[GeoPackage]": true
+        "[Microsoft SQL Server]": true
+        "[Microsoft SQL Server (JNDI)]": true
+        "[Microsoft SQL Server (JTDS Driver)]": true
+        "[Microsoft SQL Server (JTDS Driver) (JNDI)]": true
+        "[Oracle NG]": true
+        "[Oracle NG (JNDI)]": true
+        "[Oracle NG (OCI)]": true
+        "[PostGIS]": true
+        "[PostGIS (JNDI)]": true
+        "[Shapefile]": true
+        "[Web Feature Server (NG)]": true
+        # Add more factories as needed, using their display names with proper escaping
+        # Example: "[Factory Name With Spaces]": true
+      raster-formats:
+        # Common raster formats - all enabled by default (alphabetically sorted)
+        "[ArcGrid]": true
+        "[GeoPackage (mosaic)]": true
+        "[GeoTIFF]": true
+        "[ImageMosaic]": true
+        "[ImagePyramid]": true
+        "[WorldImage]": true
 
 # GeoWebCache-specific configuration properties, apply to services that run some GWC
 # internal components. For example, all of gwc-service, wms-service, and web-ui, will
