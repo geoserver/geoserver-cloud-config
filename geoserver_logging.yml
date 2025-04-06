@@ -103,6 +103,7 @@ logging:
     # gs-cloud roots
     org.geoserver.cloud: info
     org.geoserver.cloud.autoconfigure: info
+    org.geoserver.cloud.autoconfigure.extensions: info
     org.geoserver.cloud.config.factory: info
     org.geoserver.cloud.accesslog: info
     # bus debugging
@@ -136,6 +137,7 @@ logging:
     org.geoserver.security: debug
     org.geoserver.cloud.security: debug
     org.geoserver.cloud.security.gateway.sharedauth: debug
+    org.geoserver.cloud.autoconfigure.extensions.security: debug
 ---
 spring.config.activate.on-profile: logging_debug_catalog
 logging:

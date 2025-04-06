@@ -52,18 +52,6 @@ geoserver:
     instance-id: ${info.instance-id}
   security:
     enabled: true
-    authkey: true
-    jdbc: true
-    ldap: true
-    geonode.enabled: true
-    gateway-shared-auth:
-       # enable sharing the webui authentication through the gateway with the other microservices
-       # make sure the same config is applied in gateway-service.yml
-       enabled: ${gateway.shared-auth:true}
-       # if enabled, automatically set up the authentication filter chain
-       auto: true
-       # only to be set to true in the webui service (e.g. as in spring.config.activate.on-profile: webui_service) 
-       server: false
   servlet.filter.session-debug.enabled: false # until the NPE is fixed
   catalog:
     advertised: true
@@ -125,17 +113,40 @@ geoserver:
         maximumPoolSize: ${pgconfig.maxConnections:10}
         connectionTimeout: ${pgconfig.connectionTimeout:2500}
         idleTimeout: ${pgconfig.idleTimeout:30000}
-  styling:
-    css.enabled: true
-    mapbox.enabled: true
+  extension:
+    appschema:
+      enabled: ${geoserver.appschema.enabled:false}
+    css-styling:
+      enabled: true
+    mapbox-styling:
+      enabled: true
+    vector-tiles:
+      enabled: true
+      mapbox: true
+      geojson: true
+      topojson: true
+    security:
+      # Authentication extensions
+      acl:
+        enabled: ${geoserver.acl.enabled:false}
+      auth-key:
+        enabled: ${geoserver.security.authkey:true}
+      jdbc:
+        enabled: ${geoserver.security.jdbc:true}
+      ldap:
+        enabled: ${geoserver.security.ldap:true}
+      geonode-oauth2:
+        enabled: ${geoserver.security.geonode.enabled:true}
+      # Gateway shared authentication
+      gateway-shared-auth:
+        # enable sharing the webui authentication through the gateway with the other microservices
+        # make sure the same config is applied in gateway-service.yml
+        enabled: ${geoserver.security.gateway-shared-auth.enabled:true}
+        # if enabled, automatically set up the authentication filter chain
+        auto: ${geoserver.security.gateway-shared-auth.auto:true}
   wms:
     reflector.enabled: true
     kml.enabled: true
-    output-formats:
-      vector-tiles:
-        mapbox.enabled: true
-        geojson.enabled: true
-        topojson.enabled: true
 
 # GeoTools HTTP Client proxy configuration, allows configuring cascaded WMS/WMTS/WFS stores
 # that need to go through an HTTP proxy without affecting all the http clients at the JVM level
@@ -297,8 +308,11 @@ spring.config.activate.on-profile: webui_service
 geoserver:
   security:
     layergroup-containmentcache: true
-    # set shared auth to server mode. It shall be false in all other services.
-    gateway-shared-auth.server: true
+  extension:
+    security:
+      gateway-shared-auth:
+        # set shared auth to server mode. It shall be false in all other services.
+        server: true
   web-ui:
     acl.enabled: ${geoserver.acl.enabled}
     file-browser.hide-file-system: ${webui.hide-filesystem:false}
@@ -365,4 +379,3 @@ jndi:
       postgis.url: jdbc:postgresql://localhost:6432/postgis
 
 GEOWEBCACHE_CACHE_DIR: ${GEOSERVER_DATA_DIR:/tmp}/gwc
-
