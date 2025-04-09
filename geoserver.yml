@@ -75,8 +75,6 @@ geoserver:
     data-directory:
       enabled: ${backend.data-directory:false}
       location: ${GEOSERVER_DATA_DIR:/opt/app/data_directory} 
-      # use optimized parallel datadirectory loader. Defaults to true
-      parallel-loader: true
       eventual-consistency:
         # eventual consistency enfocement. Bus events may come out of order under stress
         enabled: true
