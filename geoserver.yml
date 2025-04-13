@@ -183,8 +183,10 @@ geotools:
         # Common factories - all enabled by default (alphabetically sorted)
         "[Application Schema DataAccess]": ${geoserver.extension.appschema.enabled:false}
         "[Directory of spatial files (shapefiles)]": true
+        "[FlatGeobuf]": true
         "[Generalizing data store]": true
         "[GeoPackage]": true
+        "[Graticule]": true
         "[Microsoft SQL Server]": true
         "[Microsoft SQL Server (JNDI)]": true
         "[Microsoft SQL Server (JTDS Driver)]": true
