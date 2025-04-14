@@ -116,6 +116,9 @@ geoserver:
       enabled: ${geoserver.appschema.enabled:false}
     css-styling:
       enabled: true
+    dxf:
+      # DXF WFS output format
+      enabled: true
     flatgeobuf:
       # flatgeobuf WFS output format
       enabled: true
