@@ -127,6 +127,11 @@ geoserver:
       enabled: false
     mapbox-styling:
       enabled: true
+    ogcapi:
+      # OGC API extension group
+      features:
+        # OGC API Features extension
+        enabled: true
     vector-tiles:
       enabled: true
       mapbox: true

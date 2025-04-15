@@ -114,6 +114,10 @@ spring:
           predicates:
             - Path=${basepath}/ows,${basepath}/{workspace}/ows,${basepath}/{workspace}/{layer}/ows
             - RegExpQuery=(?i:service),(?i:wfs) # match service=wfs case insensitively
+        - id: ogcapi-features
+          uri: ${targets.wfs}
+          predicates:
+            - Path=${basepath}/ogc/features/**,${basepath}/{workspace}/ogc/features/**,${basepath}/{workspace}/{layer}/ogc/features/**,${basepath}/webresources/ogcapi/**,${basepath}/apicss/**,${basepath}/swagger-ui/**
         # WMS routes
         - id: wms # proxies requests to gateway-service:/wms to wms-service:/wms
           uri: ${targets.wms}
