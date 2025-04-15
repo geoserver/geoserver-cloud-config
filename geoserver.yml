@@ -122,6 +122,9 @@ geoserver:
     flatgeobuf:
       # flatgeobuf WFS output format
       enabled: true
+    importer:
+      # Importer extension
+      enabled: false
     mapbox-styling:
       enabled: true
     vector-tiles:
@@ -339,8 +342,6 @@ geoserver:
         tms: ${gwc.services.tms:true}
         wmts: ${gwc.services.wmts:true}
         wmsc: ${gwc.services.wms:true}
-    extensions:
-      importer.enabled: ${webui.importer.enabled:false}
     demos:
       enabled: ${webui.demos.enabled:true}
       wps-request-builder: true
