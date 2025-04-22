@@ -199,6 +199,7 @@ geotools:
         "[Directory of spatial files (shapefiles)]": true
         "[FlatGeobuf]": true
         "[Generalizing data store]": true
+        "[GeoParquet]": true
         "[GeoPackage]": true
         "[Graticule]": true
         "[Microsoft SQL Server]": true
