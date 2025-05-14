@@ -32,8 +32,6 @@ spring:
 
 # GeoServer-Cloud common config properties
 geoserver:
-  extension:
-    inspire.enabled: ${extension.inspire.enabled:false}
   debug:
     # add an X-gs-cloud-service-id:<service-id> response header to each response
     # to track which cluster node replied
@@ -116,6 +114,8 @@ geoserver:
   extension:
     appschema:
       enabled: ${geoserver.appschema.enabled:false}
+    inspire:
+      enabled: ${geoserver.inspire.enabled:false}
     css-styling:
       enabled: true
     dxf:
