@@ -86,9 +86,9 @@ geoserver:
       web.enabled: true
       cache-directory: ${jdbcconfig.cachedir:${java.io.tmpdir}/gscloud/jdbcconfig/cache}
       datasource:
-        url: "${jdbcconfig.url:jdbc:postgresql://${jdbcconfig.host:database}:${jdbcconfig.port:5432}/${jdbcconfig.database:geoserver_config}?currentSchema=${jdbcconfig.schema:public}}"
+        url: "${jdbcconfig.url:jdbc:postgresql://${jdbcconfig.host:geodatabase}:${jdbcconfig.port:5432}/${jdbcconfig.database:geoserver}?currentSchema=${jdbcconfig.schema:jdbcconfig}}"
         username: ${jdbcconfig.username:geoserver}
-        password: ${jdbcconfig.password:geo5erver}
+        password: ${jdbcconfig.password:geoserver}
         driverClassname: ${jdbcconfig.driverClassname:org.postgresql.Driver}
         # optional:
         minimumIdle: ${jdbcconfig.minConnections:0}
@@ -98,13 +98,13 @@ geoserver:
     pgconfig:
       enabled: ${backend.pgconfig:false}
       initialize: ${pgconfig.initialize:true}
-      schema: ${pgconfig.schema:public}
+      schema: ${pgconfig.schema:pgconfig}
       create-schema: true
       datasource:
         jndi-name: ${pgconfig.jndi-name:}
-        url: "${pgconfig.url:jdbc:postgresql://${pgconfig.host:database}:${pgconfig.port:5432}/${pgconfig.database:geoserver_config}}"
-        username: ${pgconfig.username:pgconfig}
-        password: ${pgconfig.password:pgconfig}
+        url: "${pgconfig.url:jdbc:postgresql://${pgconfig.host:geodatabase}:${pgconfig.port:5432}/${pgconfig.database:geoserver}}"
+        username: ${pgconfig.username:geoserver}
+        password: ${pgconfig.password:geoserver}
         driverClassname: ${pgconfig.driverClassname:org.postgresql.Driver}
         # optional:
         minimumIdle: ${pgconfig.minConnections:0}
@@ -286,12 +286,12 @@ spring.config.activate.on-profile: pgconfig
 backend.pgconfig: true
 # configure the jndi jdbc datasource with the placeholders defined in jndi.yml
 jndi.pgconfig.enabled: true
-pgconfig.host: pgconfigdb
+pgconfig.host: geodatabase
 pgconfig.port: 5432
-pgconfig.database: pgconfig
+pgconfig.database: geoserver
 pgconfig.schema: pgconfig
-pgconfig.username: pgconfig
-pgconfig.password: pgconfig
+pgconfig.username: geoserver
+pgconfig.password: geoserver
 pgconfig.maxConnections: 10
 pgconfig.minConnections: 0
 pgconfig.connectionTimeout: 2500
@@ -386,12 +386,12 @@ config.server.url: http://localhost:8888
 
 acl.url: http://localhost:9000/acl/api
 
-jdbcconfig.url: jdbc:postgresql://localhost:54321/geoserver_config
+jdbcconfig.url: jdbc:postgresql://localhost:6432/geoserver?currentSchema=jdbcconfig
 jdbcconfig.username: geoserver
-jdbcconfig.password: geo5erver
+jdbcconfig.password: geoserver
 
 pgconfig.host: localhost
-pgconfig.port: 8432
+pgconfig.port: 6432
 
 jndi:
    datasources:

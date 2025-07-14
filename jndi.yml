@@ -26,9 +26,9 @@ jndi:
       enabled: ${jndi.postgis.enabled:false}
       wait-for-it: true
       wait-timeout: 10
-      url: jdbc:postgresql://postgis:5432/postgis
-      username: postgis
-      password: postgis
+      url: jdbc:postgresql://geodatabase:5432/postgis
+      username: geoserver
+      password: geoserver
       maximum-pool-size: 10
       minimum-idle: 2
       connection-timeout: 500
@@ -38,9 +38,9 @@ jndi:
       schema: ${pgconfig.schema:pgconfig}
       wait-for-it: true
       wait-timeout: 10
-      url: jdbc:postgresql://${pgconfig.host:pgconfigdb}:${pgconfig.port:5432}/${pgconfig.database:pgconfig}
-      username: ${pgconfig.username:pgconfig}
-      password: ${pgconfig.password:pgconfig}
+      url: jdbc:postgresql://${pgconfig.host:geodatabase}:${pgconfig.port:5432}/${pgconfig.database:geoserver}
+      username: ${pgconfig.username:geoserver}
+      password: ${pgconfig.password:geoserver}
       maximum-pool-size: ${pgconfig.maxConnections:10}
       minimum-idle: ${pgconfig.minConnections:0}
       connection-timeout: ${pgconfig.connectionTimeout:2500}
