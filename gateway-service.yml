@@ -206,7 +206,7 @@ targets:
   wms: http://wms:8080
   wcs: http://wcs:8080
   wps: http://wps:8080
-  rest: http://rest:8080
+  rest: http://restconfig:8080
   gwc: http://gwc:8080
   webui: http://webui:8080
 ---
