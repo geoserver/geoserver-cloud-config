@@ -38,12 +38,11 @@ geoserver:
     instanceId: false
   # Access Control List client config. Usually enabled through the acl spring profile.
   acl:
-    enabled: ${acl.enabled:false}
     client:
+      enabled: ${acl.enabled:false}
       basePath: ${acl.url:http://acl:8080/acl/api}
       username: ${acl.username:}
       password: ${acl.password:}
-      debug: ${acl.debug:false}
       caching: ${acl.caching:true}
       # timeout in seconds for startup to fail if API is not available
       initTimeout: ${acl.initTimeout:10}
