@@ -45,149 +45,156 @@ server:
 spring:
   cloud:
     gateway:
-      enabled: true
-      # Disable the Forwarded header, rely on X-Forwarded-*. Forwarded is built wrong.
-      # e.g.:      proto=https;host=\"gateway:8080\";for=\"172.20.0.1:51084\
-      # instead of proto=https;host=\"original-host:443\";for=\"172.20.0.1:51084\
-      forwarded.enabled: false
-      x-forwarded:
-        for-enabled: true
-        host-enabled: true
-        port-enabled: true
-        proto-enabled: true
-        prefix-enabled: true
-      metrics.enabled: true
-      default-filters:
-        # see https://docs.spring.io/spring-cloud-gateway/reference/spring-cloud-gateway/gatewayfilter-factories/deduperesponseheader-factory.html
-        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
-        #remove the base path on downstream requests
-        - StripBasePath=${basepath}
-      global-filter:
-        websocket-routing:
-          enabled: true
-      filter:
-        secure-headers:
-          enabled: true
-          disable:
-          - content-security-policy
-          frame-options: SAMEORIGIN
-          xss-protection-header: 0
-          referrer-policy: no-referrer
-      globalcors:
-        #add-to-simple-url-handler-mapping: true
-        cors-configurations:
-          "[/**]":
-            allowedOrigins: "*"
-            allowedHeaders: "*"
-            allowedMethods: GET, PUT, POST, DELETE, OPTIONS, HEAD
       actuator:
         verbose:
           enabled: true
-      routes:
-        - id: root-redirect-to-webui
-          uri: no://op
-          predicates:
-          - Path=/,${basepath}
-          filters:
-          - RedirectTo=302, ${basepath}/web/
-        - id: acl-root-redirect-to-swagger
-          # redirect /acl and /acl/ to swagger, otherwise /acl/ works but /acl doesn't
-          uri: no://op
-          predicates:
-          - Path=${basepath}/acl
-          filters:
-          - RedirectTo=302, ${basepath}/acl/openapi/swagger-ui/index.html
-        - id: acl
-          uri: ${targets.acl}
-          predicates:
-          - Path=${basepath}/acl/**
-          filters:
-          - RewritePath=/acl,/acl/
-        # WFS routes
-        - id: wfs # proxies requests to gateway-service:/wfs to wfs-service:/wfs
-          uri: ${targets.wfs}
-          predicates:
-            - Path=${basepath}/wfs,${basepath}/{workspace}/wfs,${basepath}/{workspace}/{layer}/wfs,${basepath}/schemas/wfs/**,${basepath}/webresources/wfs/**
-        # proxy [/{workspace}]/ows?SERVICE=wfs to wfs-service:[/{workspace}]/ows?SERVICE=wfs. Param value is case insensitive, name is not.
-        - id: wfs_ows
-          uri: ${targets.wfs}
-          predicates:
-            - Path=${basepath}/ows,${basepath}/{workspace}/ows,${basepath}/{workspace}/{layer}/ows
-            - RegExpQuery=(?i:service),(?i:wfs) # match service=wfs case insensitively
-        - id: ogcapi-features
-          uri: ${targets.wfs}
-          predicates:
-            - Path=${basepath}/ogc/features/**,${basepath}/{workspace}/ogc/features/**,${basepath}/{workspace}/{layer}/ogc/features/**,${basepath}/webresources/ogcapi/**,${basepath}/apicss/**,${basepath}/swagger-ui/**
-        # WMS routes
-        - id: wms # proxies requests to gateway-service:/wms to wms-service:/wms
-          uri: ${targets.wms}
-          predicates:
-            - Path=${basepath}/wms,${basepath}/{workspace}/wms,${basepath}/{workspace}/{layer}/wms,${basepath}/schemas/wms/**,${basepath}/openlayers/**,${basepath}/openlayers3/**,${basepath}/webresources/wms/**,${basepath}/options.png
-        - id: wms_ows # proxy [/{workspace}]/ows?SERVICE=wms to wms-service:[/{workspace}]/ows?SERVICE=wms. Param value is case insensitive, name is not.
-          uri: ${targets.wms}
-          predicates:
-            - Path=${basepath}/ows,${basepath}/{workspace}/ows,${basepath}/{workspace}/{layer}/ows
-            - RegExpQuery=(?i:service),(?i:wms) # match service=wms case insensitively
-        - id: kml # proxies requests to kml endpoints to the wms service
-          uri: ${targets.wms}
-          predicates:
-            - Path=${basepath}/wms/kml,${basepath}/{workspace}/wms/kml,${basepath}/kml/icon/**
-        # WCS routes
-        - id: wcs # proxies requests to gateway-service:/wcs to wcs-service:/wcs
-          uri: ${targets.wcs}
-          predicates:
-            - Path=${basepath}/wcs,${basepath}/{workspace}/wcs,${basepath}/{workspace}/{layer}/wcs,${basepath}/schemas/wcs/**
-        - id: wcs_ows # proxy [/{workspace}]/ows?SERVICE=wcs to wcs-service:[/{workspace}]/ows?SERVICE=wcs. Param value is case insensitive, name is not.
-          uri: ${targets.wcs}
-          predicates:
-            - Path=${basepath}/ows,${basepath}/{workspace}/ows,${basepath}/{workspace}/{layer}/ows
-            - RegExpQuery=(?i:service),(?i:wcs) # match service=wcs case insensitively
-        # WPS routes
-        - id: wps # proxies requests to gateway-service:/wps to wfs-service:/wps
-          uri: ${targets.wps}
-          predicates:
-            - Path=${basepath}/wps,${basepath}/{segment}/wps,${basepath}/schemas/wps/**
-        - id: wps_ows # proxy [/{workspace}]/ows?SERVICE=wps to wps-service:[/{workspace}]/ows?SERVICE=wps. Param value is case insensitive, name is not.
-          uri: ${targets.wps}
-          predicates:
-            - Path=${basepath}/ows,${basepath}/{segment}/ows
-            - RegExpQuery=(?i:service),(?i:wps) # match service=wps case insensitively
-        # REST configuration routes
-        - id: restconfig
-          uri: ${targets.rest}
-          predicates:
-            - Path=${basepath}/rest/**
-        # GeoWebcache configuration routes
-        - id: gwc
-          uri: ${targets.gwc}
-          predicates:
-            - Path=${basepath}/gwc/**,${basepath}/{workspace}/gwc/**,${basepath}/{workspace}/{layer}/gwc/**
-        # Web UI configuration routes
-        - id: webui
-          uri: ${targets.webui}
-          predicates:
-            - Path=${basepath}/**
-          #- Path=${basepath},${basepath}/,${basepath}/index.html,${basepath}/web,${basepath}/web/**,${basepath}/j_spring_security_check,${basepath}/j_spring_security_logout
+      server:
+        webflux:
+          # Disable the Forwarded header, rely on X-Forwarded-*. Forwarded is built wrong.
+          # e.g.:      proto=https;host=\"gateway:8080\";for=\"172.20.0.1:51084\
+          # instead of proto=https;host=\"original-host:443\";for=\"172.20.0.1:51084\
+          forwarded.enabled: false
+          x-forwarded:
+            for-enabled: true
+            host-enabled: true
+            port-enabled: true
+            proto-enabled: true
+            prefix-enabled: true
+          metrics.enabled: true
+          default-filters:
+            # see https://docs.spring.io/spring-cloud-gateway/reference/spring-cloud-gateway/gatewayfilter-factories/deduperesponseheader-factory.html
+            - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+            #remove the base path on downstream requests
+            - StripBasePath=${basepath}
+          global-filter:
+            websocket-routing:
+              enabled: true
+          filter:
+            secure-headers:
+              enabled: true
+              disable:
+              - content-security-policy
+              frame-options: SAMEORIGIN
+              xss-protection-header: 0
+              referrer-policy: no-referrer
+          globalcors:
+            #add-to-simple-url-handler-mapping: true
+            cors-configurations:
+              "[/**]":
+                allowedOrigins: "*"
+                allowedHeaders: "*"
+                allowedMethods: GET, PUT, POST, DELETE, OPTIONS, HEAD
+          routes:
+            - id: root-redirect-to-webui
+              uri: no://op
+              predicates:
+              - Path=/,${basepath}
+              filters:
+              - RedirectTo=302, ${basepath}/web/
+            - id: acl-root-redirect-to-swagger
+              # redirect /acl and /acl/ to swagger, otherwise /acl/ works but /acl doesn't
+              uri: no://op
+              predicates:
+              - Path=${basepath}/acl
+              filters:
+              - RedirectTo=302, ${basepath}/acl/openapi/swagger-ui/index.html
+            - id: acl
+              uri: ${targets.acl}
+              predicates:
+              - Path=${basepath}/acl/**
+              filters:
+              - RewritePath=/acl,/acl/
+            # WFS routes
+            - id: wfs # proxies requests to gateway-service:/wfs to wfs-service:/wfs
+              uri: ${targets.wfs}
+              predicates:
+                - Path=${basepath}/wfs,${basepath}/{workspace}/wfs,${basepath}/{workspace}/{layer}/wfs,${basepath}/schemas/wfs/**,${basepath}/webresources/wfs/**
+            # proxy [/{workspace}]/ows?SERVICE=wfs to wfs-service:[/{workspace}]/ows?SERVICE=wfs. Param value is case insensitive, name is not.
+            - id: wfs_ows
+              uri: ${targets.wfs}
+              predicates:
+                - Path=${basepath}/ows,${basepath}/{workspace}/ows,${basepath}/{workspace}/{layer}/ows
+                - RegExpQuery=(?i:service),(?i:wfs) # match service=wfs case insensitively
+            - id: ogcapi-features
+              uri: ${targets.wfs}
+              predicates:
+                - Path=${basepath}/ogc/features/**,${basepath}/{workspace}/ogc/features/**,${basepath}/{workspace}/{layer}/ogc/features/**,${basepath}/webresources/ogcapi/**,${basepath}/apicss/**,${basepath}/swagger-ui/**
+            # WMS routes
+            - id: wms # proxies requests to gateway-service:/wms to wms-service:/wms
+              uri: ${targets.wms}
+              predicates:
+                - Path=${basepath}/wms,${basepath}/{workspace}/wms,${basepath}/{workspace}/{layer}/wms,${basepath}/schemas/wms/**,${basepath}/openlayers/**,${basepath}/openlayers3/**,${basepath}/webresources/wms/**,${basepath}/options.png
+            - id: wms_ows # proxy [/{workspace}]/ows?SERVICE=wms to wms-service:[/{workspace}]/ows?SERVICE=wms. Param value is case insensitive, name is not.
+              uri: ${targets.wms}
+              predicates:
+                - Path=${basepath}/ows,${basepath}/{workspace}/ows,${basepath}/{workspace}/{layer}/ows
+                - RegExpQuery=(?i:service),(?i:wms) # match service=wms case insensitively
+            - id: kml # proxies requests to kml endpoints to the wms service
+              uri: ${targets.wms}
+              predicates:
+                - Path=${basepath}/wms/kml,${basepath}/{workspace}/wms/kml,${basepath}/kml/icon/**
+            # WCS routes
+            - id: wcs # proxies requests to gateway-service:/wcs to wcs-service:/wcs
+              uri: ${targets.wcs}
+              predicates:
+                - Path=${basepath}/wcs,${basepath}/{workspace}/wcs,${basepath}/{workspace}/{layer}/wcs,${basepath}/schemas/wcs/**
+            - id: wcs_ows # proxy [/{workspace}]/ows?SERVICE=wcs to wcs-service:[/{workspace}]/ows?SERVICE=wcs. Param value is case insensitive, name is not.
+              uri: ${targets.wcs}
+              predicates:
+                - Path=${basepath}/ows,${basepath}/{workspace}/ows,${basepath}/{workspace}/{layer}/ows
+                - RegExpQuery=(?i:service),(?i:wcs) # match service=wcs case insensitively
+            # WPS routes
+            - id: wps # proxies requests to gateway-service:/wps to wfs-service:/wps
+              uri: ${targets.wps}
+              predicates:
+                - Path=${basepath}/wps,${basepath}/{segment}/wps,${basepath}/schemas/wps/**
+            - id: wps_ows # proxy [/{workspace}]/ows?SERVICE=wps to wps-service:[/{workspace}]/ows?SERVICE=wps. Param value is case insensitive, name is not.
+              uri: ${targets.wps}
+              predicates:
+                - Path=${basepath}/ows,${basepath}/{segment}/ows
+                - RegExpQuery=(?i:service),(?i:wps) # match service=wps case insensitively
+            # REST configuration routes
+            - id: restconfig
+              uri: ${targets.rest}
+              predicates:
+                - Path=${basepath}/rest/**
+            # GeoWebcache configuration routes
+            - id: gwc
+              uri: ${targets.gwc}
+              predicates:
+                - Path=${basepath}/gwc/**,${basepath}/{workspace}/gwc/**,${basepath}/{workspace}/{layer}/gwc/**
+            # Web UI configuration routes
+            - id: webui
+              uri: ${targets.webui}
+              predicates:
+                - Path=${basepath}/**
+              #- Path=${basepath},${basepath}/,${basepath}/index.html,${basepath}/web,${basepath}/web/**,${basepath}/j_spring_security_check,${basepath}/j_spring_security_logout
 management:
+  server:
+    port: 8081
   endpoints:
-    enabled-by-default: true
-    web.exposure.include: "*"
+    access:
+      default: read-only
+    web:
+      exposure:
+        include: "*"
   endpoint:
-    info.enabled: true
-    metrics.enabled: true
-    shutdown.enabled: true
+    info:
+      access: read-only
+    metrics:
+      access: read-only
+    shutdown:
+      access: none
     health:
-      enabled: true
+      access: read-only
+      probes:
+        enabled: true
       show-details: always
+    prometheus:
+      access: read-only
   metrics:
-    binders:
-      processor.enabled: true
-      uptime.enabled: true
-      jvm.enabled: true
-    enable.all: true
-    enable.jvm: true
-    export:
-      atlas.enabled: false
+    enable:
+      jvm: true
 ---
 # this profile is automatically included if any of the embedded
 # config_first or discovery_first profile groups are active
