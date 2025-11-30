@@ -4,6 +4,7 @@
 spring.config.import:
  - geoserver_spring.yml
  - optional:geoserver_logging.yml
+ - optional:geoserver_control_flow.yml
  - jndi.yml
 
 spring:

@@ -11,6 +11,7 @@ spring:
         - "logging_debug_cache"
         - "logging_debug_acl"
         - "logging_debug_security"
+        - "logging_debug_controlflow"
 
 # default profile:
 logging:
@@ -216,3 +217,9 @@ logging:
     org.geoserver.cloud.catalog.cache: debug 
     org.geoserver.acl.authorization.cache: debug
     org.geoserver.cloud.backend.pgconfig.catalog.repository.rowmapper: debug
+---
+spring.config.activate.on-profile: logging_debug_controlflow
+logging:
+  level:
+    org.geoserver.flow: debug
+    org.geoserver.cloud.autoconfigure.extensions.controlflow: debug
