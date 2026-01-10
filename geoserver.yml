@@ -340,7 +340,7 @@ geoserver:
         # set shared auth to server mode. It shall be false in all other services.
         server: true
   web-ui:
-    acl.enabled: ${geoserver.acl.enabled}
+    acl.enabled: ${geoserver.extension.security.acl.enabled}
     file-browser.hide-file-system: ${webui.hide-filesystem:false}
     # These are all default values, here just for reference. You can omit them and add only the ones to disable or further configure
     security.enabled: true

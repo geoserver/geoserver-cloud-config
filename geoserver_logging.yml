@@ -69,6 +69,7 @@ logging:
     root: warn
     org.springframework: warn
     org.springframework.retry.support.RetryTemplate: warn
+    '[org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker]': error
     org.springframework.retry: warn
     org.springframework.cloud.bus: info
     org.springframework.jdbc.support: info
