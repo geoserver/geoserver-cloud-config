@@ -29,7 +29,7 @@ spring:
 # are common to all geoserver microservices, despite some may not apply to a given service,
 # it's easier to have them all here in the default spring profile.
 # Common configuration for all services. Override or add service specific config
-# properties on each <service-name>-service.yml file
+# properties on each geoserver_<service>.yml file
 
 # GeoServer-Cloud common config properties
 geoserver:
@@ -274,17 +274,6 @@ acl.initTimeout: 10
 spring.config.activate.on-profile: datadir
 backend.data-directory: true
 ---
-spring.config.activate.on-profile: jdbcconfig
-backend.jdbcconfig: true
-
-geoserver:
-  catalog:
-    # not sure why isolated workspaces don't work with jdbcconfig as backend
-    isolated: false
-    # disable caching if using the jdbcconfig as backend, as it does its own caching internally
-    caching.enabled: false
-
----
 spring.config.activate.on-profile: pgconfig
 # enable the pgconfig catalog backend
 backend.pgconfig: true
@@ -312,25 +301,25 @@ geoserver.catalog.caching.enabled: true
 #############################################
 #### per microservice-specific profiles: ####
 ---
-spring.config.activate.on-profile: wfs_service
+spring.config.activate.on-profile: wfs
 geoserver.security.layergroup-containmentcache: false
 ---
-spring.config.activate.on-profile: wms_service
+spring.config.activate.on-profile: wms
 geoserver.security.layergroup-containmentcache: true
 ---
-spring.config.activate.on-profile: wcs_service
+spring.config.activate.on-profile: wcs
 geoserver.security.layergroup-containmentcache: false
 ---
-spring.config.activate.on-profile: wps_service
+spring.config.activate.on-profile: wps
 geoserver.security.layergroup-containmentcache: false
 ---
-spring.config.activate.on-profile: restconfig_service
+spring.config.activate.on-profile: restconfig
 geoserver.security.layergroup-containmentcache: false
 ---
-spring.config.activate.on-profile: gwc_service
+spring.config.activate.on-profile: gwc
 geoserver.security.layergroup-containmentcache: true
 ---
-spring.config.activate.on-profile: webui_service
+spring.config.activate.on-profile: webui
 geoserver:
   security:
     layergroup-containmentcache: true

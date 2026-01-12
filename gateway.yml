@@ -24,15 +24,15 @@ basepath: ${geoserver.base-path}
 # by default, assumes a discovery-client is in use, and perform client-side load balancing on
 # the advertised instances. See the 'standalone' profile notes for a static config 
 targets:
-  acl: http://acl:8080
-  wfs: lb://wfs-service
-  wms: lb://wms-service
-  wcs: lb://wcs-service
-  wps: lb://wps-service
-  rest: lb://restconfig-v1
-  gwc: lb://gwc-service
-  webui: lb://web-ui
-  webui-demo: lb://web-ui
+  acl: lb://acl
+  wfs: lb://wfs
+  wms: lb://wms
+  wcs: lb://wcs
+  wps: lb://wps
+  rest: lb://restconfig
+  gwc: lb://gwc
+  webui: lb://webui
+  webui-demo: lb://webui
 
 # Configure routes to services. See https://cloud.spring.io/spring-cloud-gateway/single/spring-cloud-gateway.html
 server:
@@ -50,6 +50,9 @@ spring:
           enabled: true
       server:
         webflux:
+          enabled: true
+          # Regular expression expressing which proxies are trusted when they appear in Forwarded or X-Forwarded request headers
+          trusted-proxies: ".*"
           # Disable the Forwarded header, rely on X-Forwarded-*. Forwarded is built wrong.
           # e.g.:      proto=https;host=\"gateway:8080\";for=\"172.20.0.1:51084\
           # instead of proto=https;host=\"original-host:443\";for=\"172.20.0.1:51084\
@@ -105,11 +108,11 @@ spring:
               filters:
               - RewritePath=/acl,/acl/
             # WFS routes
-            - id: wfs # proxies requests to gateway-service:/wfs to wfs-service:/wfs
+            - id: wfs # proxies requests to gateway:/wfs to wfs:/wfs
               uri: ${targets.wfs}
               predicates:
                 - Path=${basepath}/wfs,${basepath}/{workspace}/wfs,${basepath}/{workspace}/{layer}/wfs,${basepath}/schemas/wfs/**,${basepath}/webresources/wfs/**
-            # proxy [/{workspace}]/ows?SERVICE=wfs to wfs-service:[/{workspace}]/ows?SERVICE=wfs. Param value is case insensitive, name is not.
+            # proxy [/{workspace}]/ows?SERVICE=wfs to wfs:[/{workspace}]/ows?SERVICE=wfs. Param value is case insensitive, name is not.
             - id: wfs_ows
               uri: ${targets.wfs}
               predicates:
@@ -120,11 +123,11 @@ spring:
               predicates:
                 - Path=${basepath}/ogc/features/**,${basepath}/{workspace}/ogc/features/**,${basepath}/{workspace}/{layer}/ogc/features/**,${basepath}/webresources/ogcapi/**,${basepath}/apicss/**,${basepath}/swagger-ui/**
             # WMS routes
-            - id: wms # proxies requests to gateway-service:/wms to wms-service:/wms
+            - id: wms # proxies requests to gateway:/wms to wms:/wms
               uri: ${targets.wms}
               predicates:
                 - Path=${basepath}/wms,${basepath}/{workspace}/wms,${basepath}/{workspace}/{layer}/wms,${basepath}/schemas/wms/**,${basepath}/openlayers/**,${basepath}/openlayers3/**,${basepath}/webresources/wms/**,${basepath}/options.png
-            - id: wms_ows # proxy [/{workspace}]/ows?SERVICE=wms to wms-service:[/{workspace}]/ows?SERVICE=wms. Param value is case insensitive, name is not.
+            - id: wms_ows # proxy [/{workspace}]/ows?SERVICE=wms to wms:[/{workspace}]/ows?SERVICE=wms. Param value is case insensitive, name is not.
               uri: ${targets.wms}
               predicates:
                 - Path=${basepath}/ows,${basepath}/{workspace}/ows,${basepath}/{workspace}/{layer}/ows
@@ -134,21 +137,21 @@ spring:
               predicates:
                 - Path=${basepath}/wms/kml,${basepath}/{workspace}/wms/kml,${basepath}/kml/icon/**
             # WCS routes
-            - id: wcs # proxies requests to gateway-service:/wcs to wcs-service:/wcs
+            - id: wcs # proxies requests to gateway:/wcs to wcs:/wcs
               uri: ${targets.wcs}
               predicates:
                 - Path=${basepath}/wcs,${basepath}/{workspace}/wcs,${basepath}/{workspace}/{layer}/wcs,${basepath}/schemas/wcs/**
-            - id: wcs_ows # proxy [/{workspace}]/ows?SERVICE=wcs to wcs-service:[/{workspace}]/ows?SERVICE=wcs. Param value is case insensitive, name is not.
+            - id: wcs_ows # proxy [/{workspace}]/ows?SERVICE=wcs to wcs:[/{workspace}]/ows?SERVICE=wcs. Param value is case insensitive, name is not.
               uri: ${targets.wcs}
               predicates:
                 - Path=${basepath}/ows,${basepath}/{workspace}/ows,${basepath}/{workspace}/{layer}/ows
                 - RegExpQuery=(?i:service),(?i:wcs) # match service=wcs case insensitively
             # WPS routes
-            - id: wps # proxies requests to gateway-service:/wps to wfs-service:/wps
+            - id: wps # proxies requests to gateway:/wps to wfs:/wps
               uri: ${targets.wps}
               predicates:
                 - Path=${basepath}/wps,${basepath}/{segment}/wps,${basepath}/schemas/wps/**
-            - id: wps_ows # proxy [/{workspace}]/ows?SERVICE=wps to wps-service:[/{workspace}]/ows?SERVICE=wps. Param value is case insensitive, name is not.
+            - id: wps_ows # proxy [/{workspace}]/ows?SERVICE=wps to wps:[/{workspace}]/ows?SERVICE=wps. Param value is case insensitive, name is not.
               uri: ${targets.wps}
               predicates:
                 - Path=${basepath}/ows,${basepath}/{segment}/ows
@@ -179,6 +182,8 @@ management:
       exposure:
         include: "*"
   endpoint:
+    env.show-values: ALWAYS
+    configprops.show-values: ALWAYS
     info:
       access: read-only
     metrics:

@@ -171,6 +171,8 @@ logging:
     org.geoserver.cloud.gwc.backend: trace
     org.geoserver.cloud.backend.pgconfig.catalog.repository: trace
     org.geoserver.cloud.backend.pgconfig.catalog.repository.rowmapper: debug
+    logging.level.org.springframework.jdbc.core.JdbcTemplate: debug
+    logging.level.org.springframework.jdbc.core.StatementCreatorUtils: trace 
 ---
 spring.config.activate.on-profile: logging_debug_events
 logging:

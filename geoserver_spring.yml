@@ -2,6 +2,10 @@
 # GeoServer microservices. Imported from geoserver.yml, in order to separate
 # application from geoserver configuration.
 server:
+  port: 8080
+  # Ensures protocol (http vs https) is preserved behind K8s Ingress or Docker Proxies
+  forward-headers-strategy: framework
+  shutdown: graceful
   tomcat:
     # Maximum number of connections that the server accepts and processes at any given time.
     # Once the limit has been reached, the operating system may still accept connections based on the "acceptCount" property.
@@ -43,6 +47,8 @@ management:
     enabled-by-default: true
     web.exposure.include: "*"
   endpoint:
+    env.show-values: ALWAYS
+    configprops.show-values: ALWAYS
     info.enabled: true
     metrics.enabled: true
     shutdown.enabled: true
