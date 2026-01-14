@@ -58,7 +58,7 @@ geoserver:
     localWorkspace: true
     isolated: true
     secure: true
-    # enable if needed on a backend-specific profile (e.g. jdbcconfig)
+    # enable if needed on a backend-specific profile (e.g. pgconfig)
     caching.enabled: false
   bus:
     enabled: true
@@ -80,21 +80,6 @@ geoserver:
         enabled: true
         # milliseconds to wait before retries. The list size determines the number of retries. The values the milliseconds to wait
         retries: 25, 25, 50
-    jdbcconfig:
-      enabled: ${backend.jdbcconfig:false}
-      initdb: true
-      web.enabled: true
-      cache-directory: ${jdbcconfig.cachedir:${java.io.tmpdir}/gscloud/jdbcconfig/cache}
-      datasource:
-        url: "${jdbcconfig.url:jdbc:postgresql://${jdbcconfig.host:geodatabase}:${jdbcconfig.port:5432}/${jdbcconfig.database:geoserver}?currentSchema=${jdbcconfig.schema:jdbcconfig}}"
-        username: ${jdbcconfig.username:geoserver}
-        password: ${jdbcconfig.password:geoserver}
-        driverClassname: ${jdbcconfig.driverClassname:org.postgresql.Driver}
-        # optional:
-        minimumIdle: ${jdbcconfig.minConnections:0}
-        maximumPoolSize: ${jdbcconfig.maxConnections:8}
-        connectionTimeout: ${jdbcconfig.connectionTimeout:250}
-        idleTimeout: ${jdbcconfig.idleTimeout:10000}
     pgconfig:
       enabled: ${backend.pgconfig:false}
       initialize: ${pgconfig.initialize:true}
@@ -378,10 +363,6 @@ eureka.server.url: http://localhost:8761/eureka
 config.server.url: http://localhost:8888
 
 acl.url: http://localhost:9000/acl/api
-
-jdbcconfig.url: jdbc:postgresql://localhost:6432/geoserver?currentSchema=jdbcconfig
-jdbcconfig.username: geoserver
-jdbcconfig.password: geoserver
 
 pgconfig.host: localhost
 pgconfig.port: 6432

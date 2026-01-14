@@ -93,8 +93,6 @@ logging:
     org.geotools.jackson: info
     org.geoserver.platform: error
     org.geoserver.platform.resource: info
-    org.geoserver.jdbcconfig: info
-    org.geoserver.security: info
     org.geoserver.cloud.security: info
     org.geoserver.cloud.security.gateway.sharedauth: info
     # gwc roots
@@ -199,7 +197,6 @@ logging:
     org.geoserver.platform.resource.NioFileLockProvider: trace
     org.geoserver.platform.resource.NioFileLock: trace
     org.geoserver.cloud.backend.pgconfig.resource.PgconfigLockProvider: trace
-    org.geoserver.jdbcstore.locks: trace
     org.geoserver.cloud.config.catalog.backend.datadirectory: trace
     org.geoserver.catalog.plugin.locking: trace
     org.geoserver.cloud.catalog.locking: trace
