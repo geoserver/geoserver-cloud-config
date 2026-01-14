@@ -134,6 +134,7 @@ logging:
 spring.config.activate.on-profile: logging_debug_security
 logging:
   level:
+    org.springframework.security: debug
     org.geoserver.security: debug
     org.geoserver.cloud.security: debug
     org.geoserver.cloud.security.gateway.sharedauth: debug
