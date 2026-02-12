@@ -129,7 +129,7 @@ geoserver:
     security:
       # Authentication extensions
       acl:
-        enabled: ${geoserver.acl.enabled:false}
+        enabled: ${geoserver.acl.client.enabled:false}
       auth-key:
         enabled: ${geoserver.security.authkey:true}
       jdbc:

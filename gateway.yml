@@ -24,7 +24,7 @@ basepath: ${geoserver.base-path}
 # by default, assumes a discovery-client is in use, and perform client-side load balancing on
 # the advertised instances. See the 'standalone' profile notes for a static config 
 targets:
-  acl: lb://acl
+  acl: http://acl:8080
   wfs: lb://wfs
   wms: lb://wms
   wcs: lb://wcs
