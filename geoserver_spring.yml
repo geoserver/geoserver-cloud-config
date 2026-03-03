@@ -45,6 +45,7 @@ management:
   endpoint:
     info.enabled: true
     metrics.enabled: true
+    startup.enabled: true
     shutdown.enabled: true
     health:
       enabled: true
