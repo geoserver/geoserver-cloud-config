@@ -72,7 +72,7 @@ geoserver:
     # All backends are disabled, enable the required one on each service. 
     data-directory:
       enabled: ${backend.data-directory:false}
-      location: ${GEOSERVER_DATA_DIR:/opt/app/data_directory} 
+      location: "${geoserver.datadir:${GEOSERVER_DATA_DIR:/opt/app/data_directory}}"
       eventual-consistency:
         # eventual consistency enfocement. Bus events may come out of order under stress
         enabled: true
