@@ -2,6 +2,8 @@ spring.config.import:
  - optional:geoserver_logging.yml
 
 # Defines the root base path at which the gateway exposes all geoserver request paths
+# We're not setting the spring.webflux.base-path because spring-cloud Gateway doesn't
+# work properly with it. See https://github.com/spring-cloud/spring-cloud-gateway/issues/1759
 # For example, if geoserver.base-path=/geoserver-cloud, then geoserver requests will be served
 # under that path prefix (e.g. http://localhost:9090/geoserver-cloud/web, http://localhost:9090/geoserver-cloud/wfs, etc)
 # Examples:
@@ -20,7 +22,7 @@ geoserver:
 
 basepath: ${geoserver.base-path}
 # by default, assumes a discovery-client is in use, and perform client-side load balancing on
-# the advertised instances. See the 'standalone' profile notes for a static config
+# the advertised instances. See the 'standalone' profile notes for a static config 
 targets:
   acl: http://acl:8080
   wfs: lb://wfs
@@ -32,10 +34,10 @@ targets:
   webui: lb://webui
   webui-demo: lb://webui
 
-# Configure routes to services. See https://docs.spring.io/spring-cloud-gateway/reference/spring-cloud-gateway-server-webmvc.html
+# Configure routes to services. See https://cloud.spring.io/spring-cloud-gateway/single/spring-cloud-gateway.html
 server:
   port: 8080
-  # Let spring-boot's ForwardedHeaderFilter take care of reflecting the client-originated protocol and address in the HttpServletRequest
+  # Let spring-boot's ForwardedHeaderFilter take care of reflecting the client-originated protocol and address in the HttpServletRequest  
   forward-headers-strategy: framework
   compression:
     enabled: true
@@ -54,46 +56,45 @@ server:
     min-response-size: 2048
 
 spring:
-  threads.virtual.enabled: true
   cloud:
     gateway:
       actuator:
         verbose:
           enabled: true
       server:
-        webmvc:
-          # Required: without this, XForwardedRequestHeadersFilter is not created and
-          # X-Forwarded-* headers won't be sent to backend services.
-          # In production, set to a regex matching actual trusted proxy IPs (e.g. "10\\.0\\.0\\.\\d+").
+        webflux:
+          enabled: true
+          # Regular expression expressing which proxies are trusted when they appear in Forwarded or X-Forwarded request headers
           trusted-proxies: ".*"
-          forwarded-request-headers-filter:
-            # Disable the Forwarded header, rely on X-Forwarded-*. Forwarded is built wrong.
-            # e.g.:      proto=https;host=\"gateway:8080\";for=\"172.20.0.1:51084\
-            # instead of proto=https;host=\"original-host:443\";for=\"172.20.0.1:51084\
-            enabled: false
-          x-forwarded-request-headers-filter:
-            enabled: true
+          # Disable the Forwarded header, rely on X-Forwarded-*. Forwarded is built wrong.
+          # e.g.:      proto=https;host=\"gateway:8080\";for=\"172.20.0.1:51084\
+          # instead of proto=https;host=\"original-host:443\";for=\"172.20.0.1:51084\
+          forwarded.enabled: false
+          x-forwarded:
             for-enabled: true
             host-enabled: true
             port-enabled: true
             proto-enabled: true
             prefix-enabled: true
-          # Note: WebSocket routing is not supported in Spring Cloud Gateway Server MVC.
-          # See https://github.com/spring-cloud/spring-cloud-gateway/issues/3442
-          # NOTE: SCG Server MVC does not support default-filters like SCG WebFlux.
-          # StripBasePath, SharedAuth, SecureHeaders, and DedupeResponseHeader must be added to each proxy route's filters list.
-          # NOTE: SCG Server MVC does not natively support 'filter.secure-headers' (WebFlux-only).
-          # Our SecureHeadersProperties bridges the gap, binding the same YAML structure.
+          metrics.enabled: true
+          default-filters:
+            # see https://docs.spring.io/spring-cloud-gateway/reference/spring-cloud-gateway/gatewayfilter-factories/deduperesponseheader-factory.html
+            - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+            #remove the base path on downstream requests
+            - StripBasePath=${basepath}
+          global-filter:
+            websocket-routing:
+              enabled: true
           filter:
             secure-headers:
               enabled: true
               disable:
               - content-security-policy
               frame-options: SAMEORIGIN
-              xss-protection-header: "0"
+              xss-protection-header: 0
               referrer-policy: no-referrer
-          # CORS is configured via 'globalcors' below, bound by our own GlobalCorsProperties.
           globalcors:
+            #add-to-simple-url-handler-mapping: true
             cors-configurations:
               "[/**]":
                 allowedOrigins: "*"
@@ -106,145 +107,84 @@ spring:
               - Path=/,${basepath}
               filters:
               - RedirectTo=302, ${basepath}/web/
+            - id: acl-root-redirect-to-swagger
+              # redirect /acl and /acl/ to swagger, otherwise /acl/ works but /acl doesn't
+              uri: no://op
+              predicates:
+              - Path=${basepath}/acl
+              filters:
+              - RedirectTo=302, ${basepath}/acl/openapi/swagger-ui/index.html
             - id: acl
               uri: ${targets.acl}
               predicates:
               - Path=${basepath}/acl/**
               filters:
-              - StripBasePath=${basepath}
-              - SecureHeaders
-              - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
               - RewritePath=/acl,/acl/
             # WFS routes
             - id: wfs # proxies requests to gateway:/wfs to wfs:/wfs
               uri: ${targets.wfs}
               predicates:
                 - Path=${basepath}/wfs,${basepath}/{workspace}/wfs,${basepath}/{workspace}/{layer}/wfs,${basepath}/schemas/wfs/**,${basepath}/webresources/wfs/**
-              filters:
-                - StripBasePath=${basepath}
-                - SharedAuth
-                - SecureHeaders
-                - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
             # proxy [/{workspace}]/ows?SERVICE=wfs to wfs:[/{workspace}]/ows?SERVICE=wfs. Param value is case insensitive, name is not.
             - id: wfs_ows
               uri: ${targets.wfs}
               predicates:
                 - Path=${basepath}/ows,${basepath}/{workspace}/ows,${basepath}/{workspace}/{layer}/ows
                 - RegExpQuery=(?i:service),(?i:wfs) # match service=wfs case insensitively
-              filters:
-                - StripBasePath=${basepath}
-                - SharedAuth
-                - SecureHeaders
-                - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
             - id: ogcapi-features
               uri: ${targets.wfs}
               predicates:
                 - Path=${basepath}/ogc/features/**,${basepath}/{workspace}/ogc/features/**,${basepath}/{workspace}/{layer}/ogc/features/**,${basepath}/webresources/ogcapi/**,${basepath}/apicss/**,${basepath}/swagger-ui/**
-              filters:
-                - StripBasePath=${basepath}
-                - SharedAuth
-                - SecureHeaders
-                - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
             # WMS routes
             - id: wms # proxies requests to gateway:/wms to wms:/wms
               uri: ${targets.wms}
               predicates:
                 - Path=${basepath}/wms,${basepath}/{workspace}/wms,${basepath}/{workspace}/{layer}/wms,${basepath}/schemas/wms/**,${basepath}/openlayers/**,${basepath}/openlayers3/**,${basepath}/webresources/wms/**,${basepath}/options.png
-              filters:
-                - StripBasePath=${basepath}
-                - SharedAuth
-                - SecureHeaders
-                - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
             - id: wms_ows # proxy [/{workspace}]/ows?SERVICE=wms to wms:[/{workspace}]/ows?SERVICE=wms. Param value is case insensitive, name is not.
               uri: ${targets.wms}
               predicates:
                 - Path=${basepath}/ows,${basepath}/{workspace}/ows,${basepath}/{workspace}/{layer}/ows
                 - RegExpQuery=(?i:service),(?i:wms) # match service=wms case insensitively
-              filters:
-                - StripBasePath=${basepath}
-                - SharedAuth
-                - SecureHeaders
-                - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
             - id: kml # proxies requests to kml endpoints to the wms service
               uri: ${targets.wms}
               predicates:
                 - Path=${basepath}/wms/kml,${basepath}/{workspace}/wms/kml,${basepath}/kml/icon/**
-              filters:
-                - StripBasePath=${basepath}
-                - SharedAuth
-                - SecureHeaders
-                - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
             # WCS routes
             - id: wcs # proxies requests to gateway:/wcs to wcs:/wcs
               uri: ${targets.wcs}
               predicates:
                 - Path=${basepath}/wcs,${basepath}/{workspace}/wcs,${basepath}/{workspace}/{layer}/wcs,${basepath}/schemas/wcs/**
-              filters:
-                - StripBasePath=${basepath}
-                - SharedAuth
-                - SecureHeaders
-                - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
             - id: wcs_ows # proxy [/{workspace}]/ows?SERVICE=wcs to wcs:[/{workspace}]/ows?SERVICE=wcs. Param value is case insensitive, name is not.
               uri: ${targets.wcs}
               predicates:
                 - Path=${basepath}/ows,${basepath}/{workspace}/ows,${basepath}/{workspace}/{layer}/ows
                 - RegExpQuery=(?i:service),(?i:wcs) # match service=wcs case insensitively
-              filters:
-                - StripBasePath=${basepath}
-                - SharedAuth
-                - SecureHeaders
-                - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
             # WPS routes
             - id: wps # proxies requests to gateway:/wps to wfs:/wps
               uri: ${targets.wps}
               predicates:
                 - Path=${basepath}/wps,${basepath}/{segment}/wps,${basepath}/schemas/wps/**
-              filters:
-                - StripBasePath=${basepath}
-                - SharedAuth
-                - SecureHeaders
-                - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
             - id: wps_ows # proxy [/{workspace}]/ows?SERVICE=wps to wps:[/{workspace}]/ows?SERVICE=wps. Param value is case insensitive, name is not.
               uri: ${targets.wps}
               predicates:
                 - Path=${basepath}/ows,${basepath}/{segment}/ows
                 - RegExpQuery=(?i:service),(?i:wps) # match service=wps case insensitively
-              filters:
-                - StripBasePath=${basepath}
-                - SharedAuth
-                - SecureHeaders
-                - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
             # REST configuration routes
             - id: restconfig
               uri: ${targets.rest}
               predicates:
                 - Path=${basepath}/rest/**
-              filters:
-                - StripBasePath=${basepath}
-                - SharedAuth
-                - SecureHeaders
-                - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
             # GeoWebcache configuration routes
             - id: gwc
               uri: ${targets.gwc}
               predicates:
                 - Path=${basepath}/gwc/**,${basepath}/{workspace}/gwc/**,${basepath}/{workspace}/{layer}/gwc/**
-              filters:
-                - StripBasePath=${basepath}
-                - SharedAuth
-                - SecureHeaders
-                - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
             # Web UI configuration routes
             - id: webui
               uri: ${targets.webui}
               predicates:
                 - Path=${basepath}/**
-              filters:
-                - StripBasePath=${basepath}
-                - SharedAuth
-                - SecureHeaders
-                - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
-
+              #- Path=${basepath},${basepath}/,${basepath}/index.html,${basepath}/web,${basepath}/web/**,${basepath}/j_spring_security_check,${basepath}/j_spring_security_logout
 management:
   server:
     port: 8081
@@ -305,7 +245,8 @@ logging:
 spring.config.activate.on-profile: logging_debug_security
 logging:
   level:
-    org.geoserver.cloud.security.gateway.sharedauth: debug
+    org.geoserver.cloud.security.gateway.sharedauth.pre: debug
+    org.geoserver.cloud.security.gateway.sharedauth.post: debug
 ---
 spring.config.activate.on-profile: local
 server.port: 9090
