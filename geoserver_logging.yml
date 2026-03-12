@@ -5,6 +5,7 @@ spring:
     group:
       debug:
         - "logging_debug"
+        - "logging_debug_access"
         - "logging_debug_catalog"
         - "logging_debug_locks"
         - "logging_debug_events"
@@ -127,6 +128,11 @@ logging:
     org.geoserver.cloud.config.factory: trace
     org.geoserver.cloud.gwc: debug
 
+---
+spring.config.activate.on-profile: logging_debug_accesslog
+logging:
+  level:
+    org.geoserver.cloud.accesslog: debug
 ---
 spring.config.activate.on-profile: logging_debug_security
 logging:

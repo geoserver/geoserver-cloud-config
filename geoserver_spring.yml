@@ -75,6 +75,9 @@ spring:
         # Use actuator's health endpoint for Consul
         health-check-path: /actuator/health
         health-check-port: 8081
-        health-check-interval: 10s
+        health-check-interval: 3s
+        # Consul auto-deregisters an instance whose health check stays critical for this long.
+        # Acts as a safety net when graceful shutdown fails to deregister the service.
+        health-check-critical-timeout: 15s
         prefer-ip-address: true
         instance-id: ${info.instance-id}

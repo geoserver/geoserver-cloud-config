@@ -62,11 +62,6 @@ spring:
           enabled: true
       server:
         webmvc:
-          # Proxy HTTP client timeouts. Prevents the gateway from hanging indefinitely
-          # when a backend service is unreachable (e.g. during container restarts).
-          http-client:
-            connect-timeout: 5s
-            read-timeout: 60s
           # Required: without this, XForwardedRequestHeadersFilter is not created and
           # X-Forwarded-* headers won't be sent to backend services.
           # In production, set to a regex matching actual trusted proxy IPs (e.g. "10\\.0\\.0\\.\\d+").
@@ -154,12 +149,16 @@ spring:
             - id: wms # proxies requests to gateway:/wms to wms:/wms
               uri: ${targets.wms}
               predicates:
+<<<<<<< HEAD
                 - Path=${basepath}/wms,${basepath}/{workspace}/wms,${basepath}/{workspace}/{layer}/wms,${basepath}/schemas/wms/**,${basepath}/openlayers/**,${basepath}/openlayers3/**,${basepath}/openlayers10/**,${basepath}/webresources/wms/**,${basepath}/options.png
+=======
+                - Path=${basepath}/wms,${basepath}/{workspace}/wms,${basepath}/{workspace}/{layer}/wms,${basepath}/schemas/wms/**,${basepath}/openlayers/**,${basepath}/openlayers3/**,${basepath}/webresources/wms/**,${basepath}/options.png
               filters:
                 - StripBasePath=${basepath}
                 - SharedAuth
                 - SecureHeaders
                 - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+>>>>>>> 0f401c6 (Replace gateway config with WebMVC routes, preserve WebFlux as deprecated)
             - id: wms_ows # proxy [/{workspace}]/ows?SERVICE=wms to wms:[/{workspace}]/ows?SERVICE=wms. Param value is case insensitive, name is not.
               uri: ${targets.wms}
               predicates:
@@ -284,8 +283,6 @@ spring:
   cloud:
     consul:
       discovery:
-        health-check-interval: 3s
-        health-check-critical-timeout: 15s
         catalog-services-watch:
           enabled: true
           delay: 1000
