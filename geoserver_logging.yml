@@ -74,8 +74,6 @@ logging:
     org.springframework.cloud.bus: info
     org.springframework.jdbc.support: info
     com.zaxxer.hikari.pool: warn
-    # log flooding with "INFO Resolving eureka endpoints via configuration"
-    com.netflix.discovery.shared.resolver: warn
     # geotools roots
     org.geotools: info
     org.geotools.util.factory: warn
@@ -111,7 +109,6 @@ logging:
     org.geoserver.cloud.event.bus: info
     org.springframework.cloud.bus.BusAutoConfiguration: info
     org.springframework.cloud.bus.DefaultBusPathMatcher: info
-    com.netflix.discovery.DiscoveryClient: warn
 ---
 spring.config.activate.on-profile: logging_debug
 logging:

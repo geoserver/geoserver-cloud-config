@@ -201,14 +201,6 @@ management:
     enable:
       jvm: true
 ---
-# this profile is automatically included if any of the embedded
-# config_first or discovery_first profile groups are active
-spring.config.activate.on-profile: discovery_eureka
-# Should only be set in application.yml. Setting the value in bootstrap.yml will cause undesirable side effects like registering in eureka with an UNKNOWN status.
-# See https://cloud.spring.io/spring-cloud-netflix/2.0.x/multi/multi__service_discovery_eureka_clients.html#_eureka_s_health_checks
-eureka.client.healthcheck.enabled: true
-eureka.server.url: http://discovery:8761/eureka
----
 spring.config.activate.on-profile: "discovery-consul"
 spring:
   cloud:
