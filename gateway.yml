@@ -209,6 +209,15 @@ spring.config.activate.on-profile: discovery_eureka
 eureka.client.healthcheck.enabled: true
 eureka.server.url: http://discovery:8761/eureka
 ---
+spring.config.activate.on-profile: "discovery-consul"
+spring:
+  cloud:
+    consul:
+      discovery:
+        catalog-services-watch:
+          enabled: true
+          delay: 1000
+---
 spring.config.activate.on-profile: standalone
 # Define static targets using known host names.
 # Host names can be docker-compose assigned service names, or k8s service names as appropriate

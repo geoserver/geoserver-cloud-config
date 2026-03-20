@@ -357,7 +357,8 @@ spring.config.activate.on-profile: local
 ## It is safe to remove this profile completely in a production deployment config.
 rabbitmq.host: localhost
 rabbitmq.port: 5672
-eureka.server.url: http://localhost:8761/eureka
+consul.host: localhost
+consul.port: 8500
 config.server.url: http://localhost:8888
 
 acl.url: http://localhost:9000/acl/api

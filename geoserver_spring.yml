@@ -30,7 +30,7 @@ spring:
   cloud:
     bus:
       enabled: true
-      id: ${info.instance-id} # use the same instance id for eureka (see service's' bootstrap.yml) and cloud-bus' rabbitmq instance id
+      id: ${info.instance-id} # use the same instance id for Consul/Eureka (see service's' bootstrap.yml) and cloud-bus' rabbitmq instance id
       trace.enabled: false #switch on tracing of acks (default off).
     stream:
       bindings:
@@ -75,3 +75,15 @@ spring.config.activate.on-profile: discovery_eureka
 # See https://cloud.spring.io/spring-cloud-netflix/2.0.x/multi/multi__service_discovery_eureka_clients.html#_eureka_s_health_checks
 eureka.client.healthcheck.enabled: true
 eureka.server.url: http://discovery:8761/eureka
+---
+spring.config.activate.on-profile: "discovery-consul"
+spring:
+  cloud:
+    consul:
+      discovery:
+        # Use actuator's health endpoint for Consul
+        health-check-path: /actuator/health
+        health-check-port: 8081
+        health-check-interval: 10s
+        prefer-ip-address: true
+        instance-id: ${info.instance-id}
