@@ -41,6 +41,17 @@ server:
   forward-headers-strategy: framework
   compression:
     enabled: true
+    mime-types:
+      - text/html
+      - text/plain
+      - text/xml
+      - application/xml
+      - application/json
+      - application/geo+json
+      - application/gml+xml
+      - application/vnd.ogc.wms_xml
+      - application/vnd.ogc.se_xml
+    min-response-size: 2048
 
 spring:
   cloud:
