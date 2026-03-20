@@ -31,6 +31,10 @@ spring:
 # Common configuration for all services. Override or add service specific config
 # properties on each geoserver_<service>.yml file
 
+server:
+  compression:
+    enabled: false
+
 # GeoServer-Cloud common config properties
 geoserver:
   debug:
