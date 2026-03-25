@@ -139,7 +139,7 @@ spring:
             - id: wms # proxies requests to gateway:/wms to wms:/wms
               uri: ${targets.wms}
               predicates:
-                - Path=${basepath}/wms,${basepath}/{workspace}/wms,${basepath}/{workspace}/{layer}/wms,${basepath}/schemas/wms/**,${basepath}/openlayers/**,${basepath}/openlayers3/**,${basepath}/webresources/wms/**,${basepath}/options.png
+                - Path=${basepath}/wms,${basepath}/{workspace}/wms,${basepath}/{workspace}/{layer}/wms,${basepath}/schemas/wms/**,${basepath}/openlayers/**,${basepath}/openlayers3/**,${basepath}/openlayers10/**,${basepath}/webresources/wms/**,${basepath}/options.png
             - id: wms_ows # proxy [/{workspace}]/ows?SERVICE=wms to wms:[/{workspace}]/ows?SERVICE=wms. Param value is case insensitive, name is not.
               uri: ${targets.wms}
               predicates:
