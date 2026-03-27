@@ -234,8 +234,6 @@ gwc:
     tms: true
     wms: true
     kml: true
-    gmaps: true
-    mgmaps: true
   blobstores:
     azure: true
     s3: true
