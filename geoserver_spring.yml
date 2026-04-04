@@ -32,12 +32,7 @@ spring:
       enabled: true
       id: ${info.instance-id}
       trace.enabled: false #switch on tracing of acks (default off).
-    stream:
-      bindings:
-        springCloudBusOutput:
-          destination: geoserver
-        springCloudBusInput:
-          destination: geoserver
+      destination: geoserver
   jackson:
     default-property-inclusion: non-empty
     serialization.indent-output: false #set to true if doing manual testing and want formatted output
