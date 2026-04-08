@@ -56,10 +56,6 @@ geoserver:
     instance-id: ${info.instance-id}
   servlet.filter.session-debug.enabled: false # until the NPE is fixed
   catalog:
-    advertised: true
-    localWorkspace: true
-    isolated: true
-    secure: true
     # enable if needed on a backend-specific profile (e.g. pgconfig)
     caching.enabled: false
   bus:
