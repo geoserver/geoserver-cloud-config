@@ -103,7 +103,11 @@ spring:
               - content-security-policy
               frame-options: SAMEORIGIN
               xss-protection-header: "0"
-              referrer-policy: no-referrer
+              # same-origin: send Referer for same-origin requests only. Required for
+              # Wicket's CSRF protection (OriginResourceIsolationPolicy) which uses the
+              # Referer header as a fallback when Sec-Fetch-* headers are absent — browsers
+              # omit Sec-Fetch-* over plain HTTP to non-localhost hosts.
+              referrer-policy: same-origin
           # CORS is configured via 'globalcors' below, bound by our own GlobalCorsProperties.
           globalcors:
             cors-configurations:
