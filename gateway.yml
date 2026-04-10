@@ -55,6 +55,13 @@ server:
 
 spring:
   threads.virtual.enabled: true
+  http:
+    clients:
+      imperative:
+        factory: reactor
+      reactive:
+        connector: reactor
+      connect-timeout: 5s
   cloud:
     gateway:
       actuator:
