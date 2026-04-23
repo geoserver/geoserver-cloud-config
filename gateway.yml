@@ -119,7 +119,7 @@ spring:
             - id: root-redirect-to-webui
               uri: no://op
               predicates:
-              - Path=/,${basepath}
+              - Path=/,${basepath},${basepath}/
               filters:
               - RedirectTo=302, ${basepath}/web/
             - id: acl
