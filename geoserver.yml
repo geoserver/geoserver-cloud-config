@@ -240,6 +240,7 @@ geotools:
 gwc:
   enabled: true
   cache-directory: ${GEOWEBCACHE_CACHE_DIR:${geoserver.backend.data-directory.location}/gwc}
+  disk-quota.enabled: true
   rest-config: true
   web-ui: true
   wms-integration: true
