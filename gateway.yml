@@ -9,7 +9,8 @@ spring.config.import:
 #geoserver.base-path: /geoserver
 #geoserver.base-path: /geoserver-cloud
 #geoserver.base-path: /geoserver/cloud
-# Leave it empty for no additional path, setting it to / won't work currently
+# Leave it empty or set it to / to serve at the root path. The gateway normalizes the value:
+# / means root, trailing slashes are dropped (/geoserver/ means /geoserver)
 geoserver:
   base-path: ${geoserver_base_path:}
   security:
