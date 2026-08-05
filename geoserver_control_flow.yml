@@ -1,6 +1,6 @@
 # This file contains the default and sample externalized configuration for the GeoServer Control Flow extension
 # and is automatically imported by geoserver.yml
-# 
+#
 # When geoserver.extension.control-flow.use-properties-file is false (default), the configuration properties defined
 # under geoserver.extension.control-flow.properties are used for devOps friendlyness.
 #
@@ -11,17 +11,23 @@
 # Following standard Spring Boot YAML configuratio guidelines, it is recommended to enclose property names in '[]'. Additionally
 # it is recommended to enclose values in "" to ensure the expressions are lazily evaluated by our custom resolver.
 #
-# Check out the examples bellow, uncomment them and teak them as necessary. 
+# Check out the examples bellow, uncomment them and teak them as necessary.
 # -----------
 # The control-flow module for GeoServer allows the administrator to control and throttle requests
 #
-# Performance: the maximum throughput in GetMap requests is usually achieved with at most 2 times the number of CPU cores requests to run in parallel. 
+# Performance: the maximum throughput in GetMap requests is usually achieved with at most 2 times the number of CPU cores requests to run in parallel.
 # Resource control: The WMS request limits allow to control the amount of memory used per request, but an OutOfMemoryError is still possible if too
 # many requests run in parallel.
 # Fairness: a single user should not be able to overwhelm the server with a lot of requests, leaving other users with tiny slices of the overall processing power.
-# 
+#
 # The control flow method does not normally reject requests, it just queues up those in excess and executes them late. However, it’s possible to
 # configure the module to reject requests that have been waited in queue for too long.
+#
+# Unlike vanilla GeoServer's single control-flow.properties, each GeoServer Cloud service loads only the rules
+# that apply to it. This first document holds the universal settings; the per-service documents below, activated
+# by each service's own profile (every application runs with spring.profiles.include: ${spring.application.name}),
+# add the service-specific rules. A profile document can add rules or override a default value, but cannot remove
+# a rule defined here: keep this document to settings that make sense on every OWS-serving service.
 
 geoserver:
   extension:
@@ -38,24 +44,10 @@ geoserver:
         '[timeout]': 10
         ##############################################
         ### Total OWS request count
-        ### ows.global: Global number of OWS requests executing in parallel
+        ### ows.global: Number of OWS requests executing in parallel in this service instance
         '[ows.global]': "${cpu.cores} * 2"
         ##############################################
-        ### PER REQUEST CONTROL
-        ### per request type control can be demanded using the following syntax: ows.<service>[.<request>[.<outputFormat>]]=<count>
-        ### Where:
-        ### <service> is the OWS service in question (at the time of writing can be wms, wfs, wcs)
-        ### <request>, optional, is the request type. For example, for the wms service it can be GetMap, GetFeatureInfo, DescribeLayer, GetLegendGraphics, GetCapabilities
-        ### <outputFormat>, optional, is the output format of the request. For example, for the wms GetMap request it could be image/png, image/gif and so on.
-        '[ows.wms]': "${cpu.cores} * 4" # more allowed for GetFeatureInfo/DescribeLayer/etc.
-        '[ows.wms.getmap]': "${cpu.cores} * 2" # limit GetMap to 2 * cores
-        '[ows.wps.execute]': "${cpu.cores}"
-        #'[ows.wfs.getfeature.application/msexcel]': 2
-        ### GeoWebCache contributes three cached tiles services: WMS-C, TMS, and WMTS. It is also possible to use the
-        ### Control flow module to throttle them, by adding the following rule to the configuration file:
-        '[ows.gwc]': "${cpu.cores} * 4"
-        ##############################################
-        ### PER USER CONCURRENCY CONTROL 
+        ### PER USER CONCURRENCY CONTROL
         ### There are two mechanisms to identify user requests. The first one is cookie based, so it will work fine for
         ### browsers but not as much for other kinds of clients. The second one is ip based, which works for any type of
         ### client but that can limit all the users sitting behind the same router
@@ -78,3 +70,50 @@ geoserver:
         #'[user.ows.wms.getmap]': "30/s"
         #'[user.ows.wps.execute]': "1000/d;30s"
         ##############################################
+
+---
+### PER REQUEST CONTROL for WMS: ows.<service>[.<request>[.<outputFormat>]]=<count>
+### <request> for the wms service can be GetMap, GetFeatureInfo, DescribeLayer, GetLegendGraphics, GetCapabilities
+### <outputFormat>, optional, for the wms GetMap request could be image/png, image/gif and so on.
+spring.config.activate.on-profile: wms
+geoserver.extension.control-flow.properties:
+  '[ows.wms]': "${cpu.cores} * 4" # more allowed for GetFeatureInfo/DescribeLayer/etc.
+  '[ows.wms.getmap]': "${cpu.cores} * 2" # limit GetMap to 2 * cores
+
+---
+### WFS has no service-specific defaults; ows.global from the first document applies. Examples:
+spring.config.activate.on-profile: wfs
+#geoserver.extension.control-flow.properties:
+#  '[ows.wfs.getfeature]': "${cpu.cores} * 2"
+#  '[ows.wfs.getfeature.application/msexcel]': 2
+
+---
+### WCS has no service-specific defaults; ows.global from the first document applies. Example:
+spring.config.activate.on-profile: wcs
+#geoserver.extension.control-flow.properties:
+#  '[ows.wcs.getcoverage]': "${cpu.cores}"
+
+---
+spring.config.activate.on-profile: wps
+geoserver.extension.control-flow.properties:
+  '[ows.wps.execute]': "${cpu.cores}"
+
+---
+### GeoWebCache contributes three cached tiles services: WMS-C, TMS, and WMTS; the ows.gwc rule throttles them.
+### ows.wms.getmap engages only for seed/truncate jobs: their tile rendering dispatches an internal WMS GetMap
+### outside of a user request. A tile-miss render during a user request is a nested dispatch that control-flow
+### skips by design (the ows.gwc rule already throttles that request).
+spring.config.activate.on-profile: gwc
+geoserver.extension.control-flow.properties:
+  '[ows.gwc]': "${cpu.cores} * 4"
+  '[ows.wms.getmap]': "${cpu.cores} * 2"
+
+---
+### The REST API does not dispatch OWS requests; control-flow has nothing to throttle here.
+spring.config.activate.on-profile: restconfig
+geoserver.extension.control-flow.enabled: false
+
+---
+### The web admin UI does not dispatch OWS requests; control-flow has nothing to throttle here.
+spring.config.activate.on-profile: webui
+geoserver.extension.control-flow.enabled: false
