@@ -11,6 +11,23 @@
 # Following standard Spring Boot YAML configuratio guidelines, it is recommended to enclose property names in '[]'. Additionally
 # it is recommended to enclose values in "" to ensure the expressions are lazily evaluated by our custom resolver.
 #
+# Rules can also be set or overridden per container through environment variables, which take precedence over this
+# file on a per-rule basis. Spring Boot's relaxed binding is not obvious for map keys: uppercase the whole property
+# path, turn dots into underscores, and drop the dash in control-flow. Everything after PROPERTIES_ becomes the rule
+# key, with underscores turning back into dots. For example:
+#
+#   GEOSERVER_EXTENSION_CONTROLFLOW_PROPERTIES_OWS_GLOBAL="${cpu.cores} * 4"
+#   GEOSERVER_EXTENSION_CONTROLFLOW_PROPERTIES_OWS_WMS_GETMAP=6
+#   GEOSERVER_EXTENSION_CONTROLFLOW_PROPERTIES_IP=6
+#   CONTROL_FLOW=false    # shorthand to disable the extension in a service, see 'enabled' below
+#
+# Rule keys that cannot be spelled as an environment variable name, such as output-format rules containing a slash,
+# can be set through SPRING_APPLICATION_JSON instead:
+#
+#   SPRING_APPLICATION_JSON='{"geoserver.extension.control-flow.properties":{"[ows.wms.getmap.image/png]":"2"}}'
+#
+# Either mechanism adds rules or overrides a value defined here; neither can remove a rule from this file.
+#
 # Check out the examples bellow, uncomment them and teak them as necessary.
 # -----------
 # The control-flow module for GeoServer allows the administrator to control and throttle requests
