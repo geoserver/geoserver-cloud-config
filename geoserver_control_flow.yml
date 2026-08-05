@@ -32,7 +32,10 @@
 # -----------
 # The control-flow module for GeoServer allows the administrator to control and throttle requests
 #
-# Performance: the maximum throughput in GetMap requests is usually achieved with at most 2 times the number of CPU cores requests to run in parallel.
+# Performance: when rendering is CPU-bound on local data sources, the maximum GetMap throughput is usually achieved
+# with about 2 times the number of CPU cores running in parallel; with network-backed sources (remote databases,
+# object storage) the CPU is used less and higher limits keep it busy. The defaults below lean toward the latter,
+# which is the common GeoServer Cloud deployment profile; dial them down for CPU-bound local-disk workloads.
 # Resource control: The WMS request limits allow to control the amount of memory used per request, but an OutOfMemoryError is still possible if too
 # many requests run in parallel.
 # Fairness: a single user should not be able to overwhelm the server with a lot of requests, leaving other users with tiny slices of the overall processing power.
@@ -61,8 +64,11 @@ geoserver:
         '[timeout]': 10
         ##############################################
         ### Total OWS request count
-        ### ows.global: Number of OWS requests executing in parallel in this service instance
-        '[ows.global]': "${cpu.cores} * 2"
+        ### ows.global: Number of OWS requests executing in parallel in this service instance.
+        ### Disabled by default: a global cap indiscriminately throttles IO-bound traffic (WFS GetFeature,
+        ### serving already-seeded tiles) that does not need it, and the per-operation rules in the
+        ### per-service documents below protect the genuinely heavy work. Uncomment for a hard ceiling.
+        #'[ows.global]': "${cpu.cores} * 8"
         ##############################################
         ### PER USER CONCURRENCY CONTROL
         ### There are two mechanisms to identify user requests. The first one is cookie based, so it will work fine for
@@ -94,8 +100,8 @@ geoserver:
 ### <outputFormat>, optional, for the wms GetMap request could be image/png, image/gif and so on.
 spring.config.activate.on-profile: wms
 geoserver.extension.control-flow.properties:
-  '[ows.wms]': "${cpu.cores} * 4" # more allowed for GetFeatureInfo/DescribeLayer/etc.
-  '[ows.wms.getmap]': "${cpu.cores} * 2" # limit GetMap to 2 * cores
+  '[ows.wms]': "${cpu.cores} * 8" # umbrella for GetFeatureInfo/DescribeLayer/GetCapabilities, far lighter than GetMap
+  '[ows.wms.getmap]': "${cpu.cores} * 4" # rendering cap; per-request memory is bounded by the WMS max rendering memory setting
 
 ---
 ### WFS has no service-specific defaults; ows.global from the first document applies. Examples:
@@ -122,8 +128,8 @@ geoserver.extension.control-flow.properties:
 ### skips by design (the ows.gwc rule already throttles that request).
 spring.config.activate.on-profile: gwc
 geoserver.extension.control-flow.properties:
-  '[ows.gwc]': "${cpu.cores} * 4"
-  '[ows.wms.getmap]': "${cpu.cores} * 2"
+  '[ows.gwc]': "${cpu.cores} * 8" # serving seeded tiles is IO-bound; misses render through this same slot
+  '[ows.wms.getmap]': "${cpu.cores} * 4"
 
 ---
 ### The REST API does not dispatch OWS requests; control-flow has nothing to throttle here.
