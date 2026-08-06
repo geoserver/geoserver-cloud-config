@@ -45,7 +45,7 @@
 #
 # Unlike vanilla GeoServer's single control-flow.properties, each GeoServer Cloud service loads only the rules
 # that apply to it. This first document holds the universal settings; the per-service documents below, activated
-# by each service's own profile (every application runs with spring.profiles.include: ${spring.application.name}),
+# by each service's own profile (every application includes its <name>_service profile from its bootstrap.yml),
 # add the service-specific rules. A profile document can add rules or override a default value, but cannot remove
 # a rule defined here: keep this document to settings that make sense on every OWS-serving service.
 
@@ -98,26 +98,26 @@ geoserver:
 ### PER REQUEST CONTROL for WMS: ows.<service>[.<request>[.<outputFormat>]]=<count>
 ### <request> for the wms service can be GetMap, GetFeatureInfo, DescribeLayer, GetLegendGraphics, GetCapabilities
 ### <outputFormat>, optional, for the wms GetMap request could be image/png, image/gif and so on.
-spring.config.activate.on-profile: wms
+spring.config.activate.on-profile: wms_service
 geoserver.extension.control-flow.properties:
   '[ows.wms]': "${cpu.cores} * 8" # umbrella for GetFeatureInfo/DescribeLayer/GetCapabilities, far lighter than GetMap
   '[ows.wms.getmap]': "${cpu.cores} * 4" # rendering cap; per-request memory is bounded by the WMS max rendering memory setting
 
 ---
 ### WFS has no service-specific defaults; ows.global from the first document applies. Examples:
-spring.config.activate.on-profile: wfs
+spring.config.activate.on-profile: wfs_service
 #geoserver.extension.control-flow.properties:
 #  '[ows.wfs.getfeature]': "${cpu.cores} * 2"
 #  '[ows.wfs.getfeature.application/msexcel]': 2
 
 ---
 ### WCS has no service-specific defaults; ows.global from the first document applies. Example:
-spring.config.activate.on-profile: wcs
+spring.config.activate.on-profile: wcs_service
 #geoserver.extension.control-flow.properties:
 #  '[ows.wcs.getcoverage]': "${cpu.cores}"
 
 ---
-spring.config.activate.on-profile: wps
+spring.config.activate.on-profile: wps_service
 geoserver.extension.control-flow.properties:
   '[ows.wps.execute]': "${cpu.cores}"
 
@@ -126,17 +126,17 @@ geoserver.extension.control-flow.properties:
 ### ows.wms.getmap engages only for seed/truncate jobs: their tile rendering dispatches an internal WMS GetMap
 ### outside of a user request. A tile-miss render during a user request is a nested dispatch that control-flow
 ### skips by design (the ows.gwc rule already throttles that request).
-spring.config.activate.on-profile: gwc
+spring.config.activate.on-profile: gwc_service
 geoserver.extension.control-flow.properties:
   '[ows.gwc]': "${cpu.cores} * 8" # serving seeded tiles is IO-bound; misses render through this same slot
   '[ows.wms.getmap]': "${cpu.cores} * 4"
 
 ---
 ### The REST API does not dispatch OWS requests; control-flow has nothing to throttle here.
-spring.config.activate.on-profile: restconfig
+spring.config.activate.on-profile: restconfig_service
 geoserver.extension.control-flow.enabled: false
 
 ---
 ### The web admin UI does not dispatch OWS requests; control-flow has nothing to throttle here.
-spring.config.activate.on-profile: webui
+spring.config.activate.on-profile: webui_service
 geoserver.extension.control-flow.enabled: false
