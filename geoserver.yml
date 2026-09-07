@@ -117,8 +117,20 @@ geoserver:
       features:
         # OGC API Features extension
         enabled: true
-    parquetry:
-      enabled: true
+    tileverse:
+      # Tileverse GeoServer plugin family (https://github.com/tileverse-io/tileverse-geoserver)
+      parquetry:
+        # Parquetry plugin: the "Parquet" datastore and the geoparquet and arrow-ipc WFS
+        # GetFeature output formats. enabled is the umbrella switch: when false every feature
+        # is off; when true each feature follows its own toggle.
+        enabled: true
+        parquet:
+          enabled: true
+        output-formats:
+          geoparquet:
+            enabled: true
+          arrow-ipc:
+            enabled: true
     pmtiles:
       enabled: true
     vector-tiles:
@@ -199,7 +211,7 @@ geotools:
         "[Oracle NG (JNDI)]": true
         "[Oracle NG (OCI)]": true
         "[PMTiles]": ${geoserver.extension.pmtiles.enabled:true}
-        "[Parquet]": ${geoserver.extension.parquetry.enabled:true}
+        "[Parquet]": ${geoserver.extension.tileverse.parquetry.parquet.enabled:true}
         "[PostGIS]": true
         "[PostGIS (JNDI)]": true
         "[Shapefile]": true
