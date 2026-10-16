@@ -19,6 +19,11 @@ geoserver:
        # make sure the same config is applied in geoserver.yml
        enabled: ${gateway.shared-auth:true}
 
+# Regular expression matching the addresses of the proxies allowed to set the request id of the logs, with the
+# X-Request-ID, http.request.id, or trace-id request headers. The gateway ignores these headers from other clients,
+# and creates its own id. Unset by default: the gateway trusts no proxy.
+#geoserver.gateway.request-id.trusted-proxies: 10\.0\.0\.\d+
+
 basepath: ${geoserver.base-path}
 # by default, assumes a discovery-client is in use, and perform client-side load balancing on
 # the advertised instances. See the 'standalone' profile notes for a static config
