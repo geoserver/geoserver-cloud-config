@@ -1,71 +1,8 @@
-# Logging profiles for GeoServer applications
+# Logging configuration of the GeoServer services.
+# The access log and the MDC attributes are configured in common_logging.yml.
 
-spring:
-  profiles:
-    group:
-      debug:
-        - "logging_debug"
-        - "logging_debug_access"
-        - "logging_debug_catalog"
-        - "logging_debug_locks"
-        - "logging_debug_events"
-        - "logging_debug_cache"
-        - "logging_debug_acl"
-        - "logging_debug_security"
-        - "logging_debug_controlflow"
-
-# default profile:
+# The log levels at startup
 logging:
-  # Control behavior of the org.geoserver.cloud.accesslog logging topic. When enabled, the request logs will include the URI's that match
-  # the following regular expressions at the specified level. The defafult level is info (see logging.level.org.geoserver.cloud.accesslog below)
-  # Additionally, if the json-logs spring profile is enabled, the log entries will include MDC attributes configured in the logging.mdc.include.* properties below
-  accesslog:
-    enabled: true
-    # A list of java regular expressions applied to the request URL for logging at info level
-    # The default behavior is to log all requests to the REST API
-    info:
-    - .*\/(rest|gwc\/rest)(\/.*|\?.*)?$
-    # A list of java regular expressions applied to the request URL for logging at debug level
-    # The default behavior is to log OWS requests
-    debug:
-    - .*\/(ows|ogc|wms|wfs|wcs|wps)(\/.*|\?.*)?$
-    # A list of java regular expressions applied to the request URL for logging at trace level
-    # The default behavior is to EXCLUDE only webui's static resources and known image extensions
-    trace:
-    - ^(?!.*\/web\/wicket\/resource\/)(?!.*\.(png|jpg|jpeg|gif|svg|webp|ico)(\\?.*)?$).*$
-
-  # GeoServer Cloud specific configuration to inject auth, application, http request, and geoserver ows request
-  # attributes to the logging MDC. The following are default values. The MDC attributes will be automatically
-  # included when using the json-logs profile. For the regular console output you could tweak the logback-spring.xml
-  # config file to include the required MDC properties
-  mdc:
-    include:
-      user:
-        id: true
-        roles: false
-      application:
-        name: true
-        version: true
-        instance-id: true
-        active-profiles: false
-      http:
-        id: true
-        method: true
-        url: true
-        query-string: false
-        parameters: false
-        headers: false
-        headers-pattern: ".*"
-        cookies: false
-        remote-addr: false
-        remote-host: false
-        session-id: false
-      geoserver:
-        ows:
-          service-name: true
-          service-version: true
-          service-format: true
-          operation-name: true
   level:
     root: warn
     org.springframework: warn
@@ -104,126 +41,78 @@ logging:
     org.geoserver.cloud.autoconfigure: info
     org.geoserver.cloud.autoconfigure.extensions: info
     org.geoserver.cloud.config.factory: info
-    org.geoserver.cloud.accesslog: info
     # bus debugging
     org.geoserver.cloud.event: info
     org.geoserver.cloud.event.bus: info
     org.springframework.cloud.bus.BusAutoConfiguration: info
     org.springframework.cloud.bus.DefaultBusPathMatcher: info
----
-spring.config.activate.on-profile: logging_debug
-logging:
-  level:
-    root: info
-    org.springframework: info
-    # geoserver roots
-    org.geoserver: info
-    org.geoserver.catalog: debug
-    org.geoserver.jackson: debug
-    org.geotools.jackson: debug
-    # gs-cloud roots
-    org.geoserver.cloud: debug
-    org.geoserver.cloud.config: debug
-    org.geoserver.cloud.autoconfigure: trace
-    org.geoserver.cloud.config.factory: trace
-    org.geoserver.cloud.gwc: debug
 
----
-spring.config.activate.on-profile: logging_debug_accesslog
-logging:
-  level:
-    org.geoserver.cloud.accesslog: debug
----
-spring.config.activate.on-profile: logging_debug_security
-logging:
-  level:
-    org.springframework.security: debug
-    org.geoserver.security: debug
-    org.geoserver.cloud.security: debug
-    org.geoserver.cloud.security.gateway.sharedauth: debug
-    org.geoserver.cloud.autoconfigure.extensions.security: debug
----
-spring.config.activate.on-profile: logging_debug_catalog
-logging:
-  level:
-    # geoserver roots
-    org.geoserver.catalog: debug
-    org.geoserver.catalog.datadir: debug
-    # gs-cloud roots
-    org.geoserver.catalog.plugin: debug
-    org.geoserver.cloud.autoconfigure.catalog.backend: debug
-    org.geoserver.cloud.catalog.backend: debug
-    org.springframework.jdbc.core: info
-    org.geoserver.cloud.gwc.backend: debug
-    # set org.geoserver.cloud.backend.pgconfig.catalog.repository: trace
-    # to print the stack trace of each SQL request, debug shows each request and the time it took
-    org.geoserver.cloud.backend.pgconfig.catalog.repository: debug
-    org.geoserver.cloud.backend.pgconfig.catalog.repository.rowmapper: debug
----
-spring.config.activate.on-profile: logging_trace_catalog
-logging:
-  level:
-    # geoserver roots
-    org.geoserver.catalog: debug
-    org.geoserver.catalog.datadir: trace
-    # gs-cloud roots
-    org.geoserver.catalog.plugin: trace
-    org.geoserver.cloud.autoconfigure.catalog.backend: trace
-    org.geoserver.cloud.catalog.backend: trace
-    org.geoserver.cloud.gwc.backend: trace
-    org.geoserver.cloud.backend.pgconfig.catalog.repository: trace
-    org.geoserver.cloud.backend.pgconfig.catalog.repository.rowmapper: debug
-    logging.level.org.springframework.jdbc.core.JdbcTemplate: debug
-    logging.level.org.springframework.jdbc.core.StatementCreatorUtils: trace 
----
-spring.config.activate.on-profile: logging_debug_events
-logging:
-  level:
-    org.geoserver.cloud.autoconfigure.catalog.event: debug
-    org.geoserver.cloud.autoconfigure.event.bus: debug
-    org.geoserver.cloud.config.catalog.events: debug
-    org.geoserver.cloud.event: debug
-    org.geoserver.cloud.event.bus: debug
-    org.geoserver.cloud.gwc.bus: debug
-    org.geoserver.cloud.gwc.repository: debug
-    org.geoserver.cloud.catalog.backend.datadir: debug
-    org.geoserver.acl.bus.bridge: debug
-    org.springframework.cloud.bus: info
-    org.springframework.cloud.bus.BusAutoConfiguration: info
-    org.springframework.cloud.bus.DefaultBusPathMatcher: info
----
-spring.config.activate.on-profile: logging_debug_locks
-logging:
-  level:
-    org.geoserver.GeoServerConfigurationLock: trace
-    org.geoserver.platform.resource.MemoryLockProvider: trace
-    org.geoserver.platform.resource.FileLockProvider: trace
-    org.geoserver.platform.resource.NioFileLockProvider: trace
-    org.geoserver.platform.resource.NioFileLock: trace
-    org.geoserver.cloud.backend.pgconfig.resource.PgconfigLockProvider: trace
-    org.geoserver.cloud.config.catalog.backend.datadirectory: trace
-    org.geoserver.catalog.plugin.locking: trace
-    org.geoserver.cloud.catalog.locking: trace
----
-spring.config.activate.on-profile: logging_debug_acl
-logging:
-  level:
-    org.geoserver.acl: debug
-    org.geoserver.acl.bus.bridge: debug
-    org.geoserver.acl.plugin: debug
-    org.geoserver.acl.api.client: debug
-    org.geoserver.acl.plugin.accessmanager: debug
-
----
-spring.config.activate.on-profile: logging_debug_cache
-logging:
-  level:
-    org.geoserver.cloud.catalog.cache: debug 
-    org.geoserver.acl.authorization.cache: debug
-    org.geoserver.cloud.backend.pgconfig.catalog.repository.rowmapper: debug
----
-spring.config.activate.on-profile: logging_debug_controlflow
-logging:
-  level:
-    org.geoserver.flow: debug
-    org.geoserver.cloud.autoconfigure.extensions.controlflow: debug
+# Logging profiles, selected while the services run, in the web UI (Settings > Global > Logging Settings)
+# or through the REST API (/rest/logging). A profile sets the levels of its loggers and of their descendants,
+# on top of the levels above. DEFAULT_LOGGING is always defined and keeps the levels above.
+# A service applies the selected profile once it has loaded the GeoServer configuration, early in its startup.
+# To debug the startup before this point, set logging.level properties on this service, for example with the
+# LOGGING_LEVEL_ORG_GEOSERVER_CLOUD=debug environment variable.
+geoserver:
+  logging:
+    profiles:
+      # The profiles of vanilla GeoServer, except TEST_LOGGING
+      PRODUCTION_LOGGING:
+        org.geoserver: warn
+        org.vfny.geoserver: warn
+        org.geotools: warn
+        org.geowebcache: error
+        org.springframework: error
+      VERBOSE_LOGGING:
+        org.geoserver: trace
+        org.vfny.geoserver: trace
+        org.geotools: trace
+      GEOSERVER_DEVELOPER_LOGGING:
+        org.geoserver: trace
+        org.vfny.geoserver: trace
+      GEOTOOLS_DEVELOPER_LOGGING:
+        org.geotools: trace
+      QUIET_LOGGING:
+        root: "off"
+      # Profiles to debug one part of GeoServer Cloud
+      DEBUG_ACCESS_LOG:
+        # The access log logs the REST requests at info, and the OWS requests at debug
+        org.geoserver.cloud.accesslog: debug
+      DEBUG_ACL:
+        org.geoserver.acl: debug
+      DEBUG_CACHE:
+        org.geoserver.cloud.catalog.cache: debug
+        org.geoserver.acl.authorization.cache: debug
+        # The row mapper of pgconfig logs the hits of its cache at trace
+        org.geoserver.cloud.backend.pgconfig.catalog.repository.rowmapper: trace
+      DEBUG_CATALOG:
+        org.geoserver.catalog: debug
+        org.geoserver.config.datadir: debug
+        org.geoserver.cloud.catalog.backend: debug
+        org.geoserver.cloud.gwc.backend: debug
+        # Logs each SQL request of pgconfig and its time. At trace, it also logs the stack trace of each request.
+        org.geoserver.cloud.backend.pgconfig.catalog.repository: debug
+      DEBUG_CONTROL_FLOW:
+        org.geoserver.flow: debug
+        org.geoserver.cloud.autoconfigure.extensions.controlflow: debug
+      DEBUG_EVENTS:
+        org.geoserver.cloud.event: debug
+        org.geoserver.cloud.autoconfigure.catalog.event: debug
+        org.geoserver.cloud.config.catalog.events: debug
+        org.geoserver.cloud.catalog.backend.datadir: debug
+        org.geoserver.cloud.gwc.bus: debug
+        org.geoserver.cloud.gwc.repository: debug
+        org.geoserver.acl.messaging.bus: debug
+      DEBUG_LOCKS:
+        org.geoserver.GeoServerConfigurationLock: trace
+        org.geoserver.platform.resource.MemoryLockProvider: trace
+        org.geoserver.platform.resource.FileLockProvider: trace
+        org.geoserver.cloud.backend.pgconfig.resource.PgconfigLockProvider: trace
+        org.geoserver.cloud.config.catalog.backend.datadirectory: trace
+        org.geoserver.catalog.plugin.locking: trace
+        org.geoserver.cloud.catalog.locking: trace
+      DEBUG_SECURITY:
+        org.springframework.security: debug
+        org.geoserver.security: debug
+        org.geoserver.cloud.security: debug
+        org.geoserver.cloud.autoconfigure.extensions.security: debug

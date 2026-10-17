@@ -1,0 +1,10 @@
+# Logging configuration of the gateway.
+# The access log and the MDC attributes are configured in common_logging.yml.
+# The logging profiles of the GeoServer services do not apply to the gateway.
+
+logging:
+  level:
+    root: warn
+    org.springframework: warn
+    '[org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker]': error
+    org.geoserver.cloud: info

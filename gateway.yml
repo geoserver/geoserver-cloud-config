@@ -1,5 +1,6 @@
 spring.config.import:
- - optional:geoserver_logging.yml
+ - optional:common_logging.yml
+ - optional:gateway_logging.yml
 
 # Defines the root base path at which the gateway exposes all geoserver request paths
 # For example, if geoserver.base-path=/geoserver-cloud, then geoserver requests will be served
@@ -319,17 +320,6 @@ targets:
   rest: http://restconfig:8080
   gwc: http://gwc:8080
   webui: http://webui:8080
----
-spring.config.activate.on-profile: debug
-
-logging:
-   level:
-      root: debug
----
-spring.config.activate.on-profile: logging_debug_security
-logging:
-  level:
-    org.geoserver.cloud.security.gateway.sharedauth: debug
 ---
 spring.config.activate.on-profile: local
 server.port: 9090
