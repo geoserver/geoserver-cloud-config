@@ -34,6 +34,13 @@ targets:
   webui: lb://web-ui
   webui-demo: lb://web-ui
 
+# Regular expression matching the addresses of the reverse proxies in front of the gateway, as seen by the gateway.
+# The gateway reads the client address of a request from its X-Forwarded-For header only when a trusted proxy sent
+# the request. From other clients, the client address is the address of the connection.
+# Unset by default: the gateway trusts no proxy. Behind a reverse proxy or an ingress controller, list its addresses,
+# otherwise the services see the proxy address as the client address of the requests.
+#geoserver.gateway.trusted-proxies: 10\.0\.0\.\d+
+
 # Configure routes to services. See https://cloud.spring.io/spring-cloud-gateway/single/spring-cloud-gateway.html
 server:
   port: 8080
