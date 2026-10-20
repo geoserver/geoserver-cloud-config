@@ -20,10 +20,14 @@ geoserver:
        # make sure the same config is applied in geoserver.yml
        enabled: ${gateway.shared-auth:true}
 
-# Regular expression matching the addresses of the proxies allowed to set the request id of the logs, with the
-# X-Request-ID, http.request.id, or trace-id request headers. The gateway ignores these headers from other clients,
-# and creates its own id. Unset by default: the gateway trusts no proxy.
-#geoserver.gateway.request-id.trusted-proxies: 10\.0\.0\.\d+
+# Regular expression matching the addresses of the reverse proxies in front of the gateway, as seen by the gateway.
+# The gateway reads the client address of a request from its X-Forwarded-For header, and the request id of the logs
+# from its X-Request-ID, http.request.id or trace-id headers, only when a trusted proxy sent the request. From other
+# clients, the client address is the address of the connection, and the gateway creates the request id.
+# Unset by default: the gateway trusts no proxy. Behind a reverse proxy or an ingress controller, list its addresses,
+# otherwise the services see the proxy address as the client address of the requests.
+# Replaces geoserver.gateway.request-id.trusted-proxies, still honored.
+#geoserver.gateway.trusted-proxies: 10\.0\.0\.\d+
 
 basepath: ${geoserver.base-path}
 # by default, assumes a discovery-client is in use, and perform client-side load balancing on
@@ -82,8 +86,8 @@ spring:
             connect-timeout: 5s
             read-timeout: 60s
           # Required: without this, XForwardedRequestHeadersFilter is not created and
-          # X-Forwarded-* headers won't be sent to backend services.
-          # In production, set to a regex matching actual trusted proxy IPs (e.g. "10\\.0\\.0\\.\\d+").
+          # X-Forwarded-* headers won't be sent to backend services. Keep it at ".*": the client
+          # address and the request id are decided by geoserver.gateway.trusted-proxies instead.
           trusted-proxies: ".*"
           forwarded-request-headers-filter:
             # Disable the Forwarded header, rely on X-Forwarded-*. Forwarded is built wrong.
