@@ -19,6 +19,12 @@ geoserver:
        # enable sharing the webui authentication through the gateway with the other microservices
        # make sure the same config is applied in geoserver.yml
        enabled: ${gateway.shared-auth:true}
+  extension:
+    security:
+      gateway-bearer-auth:
+        # Validates OIDC Bearer tokens at the gateway and passes the mapped user and roles to backend services via SharedAuth.
+        # Disabled by default; configure the issuer, audience, and role mappings before enabling.
+        enabled: ${gateway.bearer.enabled:false}
 
 # Regular expression matching the addresses of the reverse proxies in front of the gateway, as seen by the gateway.
 # The gateway reads the client address of a request from its X-Forwarded-For header, and the request id of the logs
