@@ -9,7 +9,7 @@ spring.config.import:
  - jndi.yml
 
 spring:
-  # cache implementation to use if `geoserver.backend.caching.enabled: true`
+  # cache implementation of the Spring cache manager (GWC tile layer catalog, PMTiles, ACL)
   cache:
     type: caffeine
     caffeine:
@@ -56,9 +56,6 @@ geoserver:
     enabled: true
     instance-id: ${info.instance-id}
   servlet.filter.session-debug.enabled: false # until the NPE is fixed
-  catalog:
-    # enable if needed on a backend-specific profile (e.g. pgconfig)
-    caching.enabled: false
   bus:
     enabled: true
     # whether to send distributed events (i.e. acts as master). All instances receive remote events.
@@ -95,6 +92,22 @@ geoserver:
         maximumPoolSize: ${pgconfig.maxConnections:10}
         connectionTimeout: ${pgconfig.connectionTimeout:2500}
         idleTimeout: ${pgconfig.idleTimeout:30000}
+      # in-memory caches of the pgconfig backend, see the configuration guide
+      cache:
+        enabled: true
+        max-heap-percent: 5
+        compression: zstd
+        miss-ttl: 30s
+        # built GWC tile layers kept by each instance of a service running GWC; 0 turns this off
+        tile-layers: 1000
+        listing-write-through: false
+        request:
+          enabled: true
+          max-entries: 8000
+          max-total-entries: 100000
+        resources:
+          enabled: true
+          max-heap-percent: 1
   extension:
     appschema:
       enabled: ${geoserver.appschema.enabled:false}
@@ -291,9 +304,6 @@ pgconfig.initialize: true
 # tell the pgconfig catalog backend which JNDI datasource to use
 # e.g., jndi.datasources.pgconfig in jndi.yml defines java:comp/env/jdbc/pgconfig
 pgconfig.jndi-name: java:comp/env/jdbc/pgconfig
-
-# enable caching if using the pgconfig as backend
-geoserver.catalog.caching.enabled: true
 
 #############################################
 #### per microservice-specific profiles: ####
