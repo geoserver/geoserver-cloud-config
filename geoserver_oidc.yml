@@ -1,0 +1,42 @@
+# OpenID Connect / OAuth2 Login extension for GeoServer Cloud.
+#
+# This file is imported by geoserver.yml as an optional resource:
+#
+#   spring.config.import:
+#    - optional:geoserver_oidc.yml
+#
+# The extension is disabled by default. Set enabled=true (here, via an env
+# variable, or in your Spring profile) to make the OIDC provider available
+# for configuration in the GeoServer admin UI.
+#
+# Per-provider settings (client id / secret, authorization/token/userinfo
+# endpoints, role extraction, ...) are NOT configured here: they are stored
+# by GeoServer in the data directory as standard security filter config. A
+# follow-up iteration will add Spring Boot properties-based provider
+# configuration; for now this file holds only the enabled flag.
+
+geoserver:
+  extension:
+    security:
+      oidc:
+        enabled: ${geoserver.security.oidc.enabled:false}
+
+# OIDC callback path routing:
+#
+# The Spring OAuth2 login flow uses:
+#   - /web/oauth2/authorization/{providerId}    (redirect to the IdP)
+#   - /web/login/oauth2/code/{providerId}       (callback from the IdP)
+#
+# Both are served by the GeoServer Cloud webui pod. The default gateway
+# configuration routes all /web/** traffic to the webui service, so no
+# additional gateway routes are required.
+#
+# Cross-pod propagation of a browser login (to wms, wfs, ...) relies on the
+# gateway-shared-auth extension: the webui authenticates via OIDC, the
+# gateway caches the identity, and other services receive forwarded headers.
+#
+# API clients send an Authorization: Bearer <JWT> header instead. The OIDC
+# filter validates it in the service receiving the request when its "Enable
+# Resource Server (Bearer JWT)" option is on, the default. The filter must
+# therefore be part of the filter chains of those services too. The gateway
+# forwards the header untouched and needs no token filter of its own.

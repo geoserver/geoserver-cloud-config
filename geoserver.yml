@@ -6,6 +6,7 @@ spring.config.import:
  - optional:common_logging.yml
  - optional:geoserver_logging.yml
  - optional:geoserver_control_flow.yml
+ - optional:geoserver_oidc.yml
  - jndi.yml
 
 spring:
@@ -162,6 +163,15 @@ geoserver:
         enabled: ${geoserver.security.jdbc:true}
       ldap:
         enabled: ${geoserver.security.ldap:true}
+      oidc:
+        # OpenID Connect / OAuth2 Login community extension.
+        # When enabled, the provider becomes available to configure from the GeoServer admin UI
+        # (Security > Authentication). Per-provider settings (client id/secret, endpoints, ...)
+        # are stored as standard GeoServer security filter config in the data directory.
+        # Callback paths /web/oauth2/authorization/** and /web/login/oauth2/code/** are routed
+        # to the webui service via the existing gateway /web/** wildcard route; no gateway
+        # changes are required. See config/geoserver_oidc.yml for configuration placeholders.
+        enabled: ${geoserver.security.oidc.enabled:false}
       geonode-oauth2:
         enabled: ${geoserver.security.geonode.enabled:true}
       # Gateway shared authentication
