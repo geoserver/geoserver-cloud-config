@@ -162,6 +162,11 @@ geoserver:
         enabled: ${geoserver.security.jdbc:true}
       ldap:
         enabled: ${geoserver.security.ldap:true}
+      oidc:
+        # OpenID Connect / OAuth2 Login. Administrators configure the providers in the web UI
+        # (Security > Authentication), and the settings are stored in the data directory.
+        # The login callbacks under /web/** reach the webui through the default gateway route.
+        enabled: ${geoserver.security.oidc.enabled:true}
       geonode-oauth2:
         enabled: ${geoserver.security.geonode.enabled:true}
       # Gateway shared authentication
