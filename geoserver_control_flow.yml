@@ -65,9 +65,9 @@ geoserver:
         ##############################################
         ### Total OWS request count
         ### ows.global: Number of OWS requests executing in parallel in this service instance.
-        ### Disabled by default: a global cap indiscriminately throttles IO-bound traffic (WFS GetFeature,
-        ### serving already-seeded tiles) that does not need it, and the per-operation rules in the
-        ### per-service documents below protect the genuinely heavy work. Uncomment for a hard ceiling.
+        ### Disabled by default: each GeoServer Cloud service runs in its own pods, and the per-service documents
+        ### below cap each service as a whole and its heavy operations. Uncomment for one ceiling over the OWS
+        ### requests of a pod regardless of the service.
         #'[ows.global]': "${cpu.cores} * 8"
         ##############################################
         ### PER USER CONCURRENCY CONTROL
@@ -104,17 +104,20 @@ geoserver.extension.control-flow.properties:
   '[ows.wms.getmap]': "${cpu.cores} * 4" # rendering cap; per-request memory is bounded by the WMS max rendering memory setting
 
 ---
-### WFS has no service-specific defaults; ows.global from the first document applies. Examples:
+### PER REQUEST CONTROL for WFS: <request> can be GetFeature, DescribeFeatureType, GetCapabilities, Transaction, ...
+### <outputFormat>, optional, for GetFeature could be application/msexcel, SHAPE-ZIP and so on.
 spring.config.activate.on-profile: wfs
-#geoserver.extension.control-flow.properties:
-#  '[ows.wfs.getfeature]': "${cpu.cores} * 2"
-#  '[ows.wfs.getfeature.application/msexcel]': 2
+geoserver.extension.control-flow.properties:
+  '[ows.wfs]': "${cpu.cores} * 8" # umbrella for DescribeFeatureType/GetCapabilities/Transaction, far lighter than GetFeature
+  '[ows.wfs.getfeature]': "${cpu.cores} * 2" # streams features from the store; the slot is held for the whole download
+  #'[ows.wfs.getfeature.application/msexcel]': 2 # memory-bound output formats deserve a lower limit of their own
 
 ---
-### WCS has no service-specific defaults; ows.global from the first document applies. Example:
+### PER REQUEST CONTROL for WCS: <request> can be GetCoverage, DescribeCoverage, GetCapabilities
 spring.config.activate.on-profile: wcs
-#geoserver.extension.control-flow.properties:
-#  '[ows.wcs.getcoverage]': "${cpu.cores}"
+geoserver.extension.control-flow.properties:
+  '[ows.wcs]': "${cpu.cores} * 8" # umbrella for DescribeCoverage/GetCapabilities, far lighter than GetCoverage
+  '[ows.wcs.getcoverage]': "${cpu.cores}" # reads, reprojects and encodes rasters: CPU and memory bound
 
 ---
 spring.config.activate.on-profile: wps

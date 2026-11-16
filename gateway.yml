@@ -72,7 +72,11 @@ spring:
         factory: reactor
       reactive:
         connector: reactor
-      connect-timeout: 5s
+      # Timeouts of the proxied requests. The connect timeout keeps a request from hanging on an unreachable
+      # service, as during a pod restart. The read timeout runs between two reads of a response, the first byte
+      # included: a service silent for longer than this fails the request, whether stuck or still working on it.
+      connect-timeout: ${gateway.connect-timeout:5s}
+      read-timeout: ${gateway.read-timeout:300s}
   cloud:
     gateway:
       actuator:
@@ -80,11 +84,6 @@ spring:
           enabled: true
       server:
         webmvc:
-          # Proxy HTTP client timeouts. Prevents the gateway from hanging indefinitely
-          # when a backend service is unreachable (e.g. during container restarts).
-          http-client:
-            connect-timeout: 5s
-            read-timeout: 60s
           # Required: without this, XForwardedRequestHeadersFilter is not created and
           # X-Forwarded-* headers won't be sent to backend services. Keep it at ".*": the client
           # address and the request id are decided by geoserver.gateway.trusted-proxies instead.
