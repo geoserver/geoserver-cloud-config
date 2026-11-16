@@ -17,8 +17,12 @@ server:
     threads:
       # Minimum amount of worker threads.
       min-spare: ${tomcat.threads.min.spare:10}
-      # Maximum amount of worker threads.
-      max: ${tomcat.threads.max:200}
+      # Maximum number of worker threads. A request above this number waits in the queue of Tomcat, with no timeout
+      # and unseen by control-flow, the admission point of the OWS requests (geoserver_control_flow.yml). A gateway
+      # replica sends up to 500 requests at once to one address, the size of its connection pool; the default admits
+      # them all, regardless of the services in the pod. A thread waiting in the control-flow queue costs memory
+      # only. Raise the value when several gateway replicas proxy the same pods; lower it for pods with little memory.
+      max: ${tomcat.threads.max:500}
 
 spring:
   rabbitmq:
