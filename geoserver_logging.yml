@@ -74,6 +74,21 @@ geoserver:
         org.geotools: trace
       QUIET_LOGGING:
         root: "off"
+      # The profile of the OpenID Connect extension of vanilla GeoServer. It quiets most of the logging,
+      # and logs each step of the logins and of the Bearer token validation.
+      OIDC_LOGGING:
+        org.springframework: info
+        org.geotools: warn
+        org.geowebcache: error
+        org.geoserver: warn
+        org.vfny.geoserver: warn
+        org.springframework.security: debug
+        # Too noisy at debug
+        org.springframework.security.web.FilterChainProxy: info
+        org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter: warn
+        org.springframework.security.web.context.HttpSessionSecurityContextRepository: info
+        org.geoserver.security: info
+        org.geoserver.security.oauth2: trace
       # Profiles to debug one part of GeoServer Cloud
       DEBUG_ACCESS_LOG:
         # The access log logs the REST requests at info, and the OWS requests at debug
