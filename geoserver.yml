@@ -212,6 +212,9 @@ geotools:
         # Common factories - all enabled by default (alphabetically sorted)
         "[Application Schema DataAccess]": ${geoserver.extension.appschema.enabled:false}
         "[Directory of spatial files (shapefiles)]": true
+        # Not a supported GeoServer Cloud data store, it comes with the GeoParquet module. A DuckDB database
+        # is a file, or lives in the memory of one process: its use by several pods is not verified.
+        "[DuckDB]": false
         "[FlatGeobuf]": true
         "[Generalizing data store]": true
         "[GeoParquet]": true
